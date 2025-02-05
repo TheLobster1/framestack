@@ -1,5 +1,7 @@
 # Framestack
 ---
 ## Prerequistes
-### .Net 9
-### .Net Maui
+<ol>
+  <li>.Net 9</li>
+  <li>.Net Maui</li>
+</ol>
