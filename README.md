@@ -14,7 +14,6 @@
 <ul> 
   <li> Windows and Android application </li>
   <li> Account creation </li>
-  <li> Password protection </li>
   <li> Cloud storage </li>
   <li> Uploading Photos and videos </li>
   <li> Custom naming and descriptions </li>
