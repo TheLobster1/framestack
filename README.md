@@ -8,7 +8,7 @@
 
 ---
 ## The Idea
-### Framestack is a revolutionary new solution to the problem of sharing pictures and videos with the whole family. The project aims at allowing a user to upload a photo or video to the cloud and share it amoung your family. 
+### Framestack is a revolutionary new solution to the problem of sharing pictures and videos with the whole family. The project aims at allowing a user to upload a photo or video to the cloud and share it amoung your family. You can group you content however you please whether it be via dedicated albums or tagging the option is yours.
 ---
 ## Whats included?
 <ul> 
