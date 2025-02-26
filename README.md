@@ -29,3 +29,7 @@ This application will use the thread pool to upload multiple files at once.
 Async and Await will be used for loading pictures and handling UI navigation.
 Locking will be used to prevent resetting various collections throughout the application.
 Asynchronous I/O will be used when submitting items to the database. The picture will be uploaded to the server, during which the user can continue to enter details for the picture.
+
+### Class Diagram
+
+![C# threading diagram](https://github.com/TheLobster1/framestack/blob/master/FrameStacksolid.png)
