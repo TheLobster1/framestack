@@ -1,7 +1,7 @@
 # Framestack
 ---
 ## The Idea
-### Framestack is a revolutionary new solution to the problem of sharing pictures and videos with the whole family. The project aims at allowing a user to upload a photo or video to the cloud and share it amoung your family. You can group you content however you please whether it be via dedicated albums or tagging, the option is yours.
+### Framestack is a revolutionary new solution to the problem of sharing pictures and videos with the whole family. The project aims at allowing a user to upload a photo or video to the cloud and share it amoung your family. You can group your content however you please whether it be via dedicated albums or tagging, the option is yours.
 
 ## Prerequistes
 <ol>
@@ -29,3 +29,7 @@ This application will use the thread pool to upload multiple files at once.
 Async and Await will be used for loading pictures and handling UI navigation.
 Locking will be used to prevent resetting various collections throughout the application.
 Asynchronous I/O will be used when submitting items to the database. The picture will be uploaded to the server, during which the user can continue to enter details for the picture.
+
+### Class Diagram
+
+![C# threading diagram](https://github.com/TheLobster1/framestack/blob/master/FrameStacksolid.png)
