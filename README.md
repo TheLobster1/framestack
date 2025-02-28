@@ -32,4 +32,4 @@ Asynchronous I/O will be used when submitting items to the database. The picture
 
 ### Class Diagram
 
-![C# threading diagram](https://github.com/TheLobster1/framestack/blob/master/FrameStacksolid.png)
+![C# threading diagram](https://github.com/TheLobster1/framestack/blob/master/FrameStack.png)
