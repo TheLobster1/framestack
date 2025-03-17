@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using framestack.ViewModels;
+using framestack.Views;
+using Microsoft.Extensions.Logging;
 
 namespace framestack
 {
@@ -13,10 +15,13 @@ namespace framestack
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                });
+                })
+                .Services
+                .AddViewModels()
+                .AddViews();
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();

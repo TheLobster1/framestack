@@ -1,6 +1,6 @@
 ﻿using framestack.ViewModels;
 
-namespace framestack
+namespace framestack.Views
 {
     public partial class MainPage : ContentPage
     {
