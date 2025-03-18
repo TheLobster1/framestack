@@ -12,6 +12,8 @@ namespace framestack.Views
         {
             //services.AddTransient<StartPage>();
             services.AddTransient<MainPage>();
+            services.AddTransient<LoginPage>();
+            services.AddTransient<RegisterPage>();
 
             return services;
         }

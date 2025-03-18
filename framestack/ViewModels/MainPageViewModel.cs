@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using framestack.Views;
 
 namespace framestack.ViewModels
 {
@@ -20,7 +21,15 @@ namespace framestack.ViewModels
         [RelayCommand]
         private async Task Login()
         {
-            //TODO: NAVIGATE TO LOGIN
+            await Application.Current.MainPage.Navigation.PushAsync(new LoginPage(new LoginPageViewModel()));
+
+        }
+
+        [RelayCommand]
+        private async Task Register()
+        {
+            await Application.Current.MainPage.Navigation.PushAsync(new RegisterPage(new RegisterPageViewModel()));
+
 
         }
     }

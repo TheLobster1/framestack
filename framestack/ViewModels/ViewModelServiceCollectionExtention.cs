@@ -12,6 +12,8 @@ namespace framestack.ViewModels
         {
             //services.AddTransient<StartPageViewModel>();
             services.AddTransient<MainPageViewModel>();
+            services.AddTransient<LoginPageViewModel>();
+            services.AddTransient<RegisterPageViewModel>();
 
             return services;
         }

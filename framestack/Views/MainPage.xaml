@@ -6,8 +6,37 @@
              xmlns:model="clr-namespace:framestack.Models"
              x:DataType="viewmodel:MainPageViewModel">
 
-    <ScrollView>
-        
-    </ScrollView>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="4*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+        <Label
+            Margin="10"
+            Grid.Row="1"
+            Text="Frame Stack"
+            FontAttributes="Bold"
+            FontSize="64"
+            FontAutoScalingEnabled="True"
+            LineBreakMode="WordWrap"/>
+        <Button
+            Grid.Row="3"
+            Margin="10"
+            CornerRadius="100"
+            Text="Login"
+            Command="{Binding LoginCommand}"
+            />
+        <Button
+            Margin="10"
+            CornerRadius="100"
+            Grid.Row="4"
+            Text="Register"
+            Command="{Binding RegisterCommand}"
+            />
+    </Grid>
 
 </ContentPage>

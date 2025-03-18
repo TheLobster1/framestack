@@ -5,8 +5,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:framestack"
     xmlns:views="clr-namespace:framestack.Views"
-    Shell.FlyoutBehavior="Flyout"
-    Title="framestack">
+    Shell.FlyoutBehavior="Disabled"
+    Title="framestack"
+    Shell.NavBarIsVisible="False">
 
     <ShellContent
         Title="Home"
