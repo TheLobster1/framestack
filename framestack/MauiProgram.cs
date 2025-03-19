@@ -1,4 +1,5 @@
-﻿using framestack.ViewModels;
+﻿using framestack.Services;
+using framestack.ViewModels;
 using framestack.Views;
 using Microsoft.Extensions.Logging;
 
@@ -18,7 +19,9 @@ namespace framestack
                 })
                 .Services
                 .AddViewModels()
-                .AddViews();
+                .AddViews()
+                .AddServices()
+                .AddSingleton<DatabaseConnectionService>();
 
 #if DEBUG
             builder.Logging.AddDebug();
