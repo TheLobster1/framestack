@@ -16,18 +16,42 @@
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <Label
-    Margin="10"
-    Grid.Row="1"
-    Text="Frame Stack"
-    FontAttributes="Bold"
-    FontSize="64"
-    FontAutoScalingEnabled="True"
-    LineBreakMode="WordWrap"/>
+            Margin="10"
+            Grid.Row="1"
+            Text="Frame Stack"
+            FontAttributes="Bold"
+            FontSize="64"
+            FontAutoScalingEnabled="True"
+            LineBreakMode="WordWrap"/>
+        <Border
+            Grid.Row="2"
+            BackgroundColor="#f7f2fa"
+            StrokeShape="RoundRectangle 40">
+            <Entry
+                        Placeholder="Email"
+                        FontAutoScalingEnabled="True"
+                        Keyboard="Email"
+                        BackgroundColor="Transparent"
+                        x:Name="UsernameEntry"/>
+        </Border>
+        <Border
+            Grid.Row="3"
+            BackgroundColor="#f7f2fa"
+            StrokeShape="RoundRectangle 40">
+            <Entry
+                        Placeholder="Password"
+                        IsPassword="True"
+                        FontAutoScalingEnabled="True"
+                        BackgroundColor="Transparent"
+                        x:Name="PasswordEntry"/>
+        </Border>
+        
+        
+        
         <Button
-    Margin="10"
-    CornerRadius="100"
-    Grid.Row="7"
-    Text="Login"
-    />
+            Margin="10"
+            CornerRadius="100"
+            Grid.Row="7"
+            Text="Login"/>
     </Grid>
 </ContentPage>
