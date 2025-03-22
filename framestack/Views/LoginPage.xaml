@@ -3,55 +3,52 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="framestack.Views.LoginPage"
              Title="LoginPage">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="2*"/>
-        </Grid.RowDefinitions>
+    <FlexLayout
+        Direction="Column"
+        >
         <Label
-            Margin="10"
-            Grid.Row="1"
-            Text="Frame Stack"
-            FontAttributes="Bold"
-            FontSize="64"
-            FontAutoScalingEnabled="True"
-            LineBreakMode="WordWrap"/>
-        <Border
-            Grid.Row="2"
-            BackgroundColor="#f7f2fa"
-            StrokeShape="RoundRectangle 40">
-            <Entry
+                    Margin="10"
+                    Text="Frame Stack"
+                    FontAttributes="Bold"
+                    FontSize="64"
+                    FontAutoScalingEnabled="True"
+                    LineBreakMode="WordWrap"/>
+                <Border
+                    BackgroundColor="#f7f2fa"
+                    StrokeShape="RoundRectangle 40"
+                    StrokeThickness="0"
+                    Padding="10"
+                    Margin="10">
+                    <Entry
                         Placeholder="Email"
-                        FontAutoScalingEnabled="True"
                         Keyboard="Email"
                         BackgroundColor="Transparent"
+                        ReturnType="Next"
+                        FontSize="20"
                         x:Name="UsernameEntry"/>
-        </Border>
-        <Border
-            Grid.Row="3"
-            BackgroundColor="#f7f2fa"
-            StrokeShape="RoundRectangle 40">
-            <Entry
+                    
+                </Border>
+                <Border
+                    BackgroundColor="#f7f2fa"
+                    StrokeShape="RoundRectangle 40"
+                    StrokeThickness="0"
+                    Padding="10"
+                    Margin="10">
+                    <Entry
                         Placeholder="Password"
                         IsPassword="True"
-                        FontAutoScalingEnabled="True"
                         BackgroundColor="Transparent"
+                        FontSize="20"
                         x:Name="PasswordEntry"/>
-        </Border>
+                </Border>
         
+                <Button
+                    Margin="10"
+                    Padding="10"
+                    CornerRadius="100"
+                    FontSize="20"
+                    Text="Login"/>
+    </FlexLayout>
+    
         
-        
-        <Button
-            Margin="10"
-            CornerRadius="100"
-            Grid.Row="7"
-            Text="Login"/>
-    </Grid>
 </ContentPage>

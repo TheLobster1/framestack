@@ -2,32 +2,112 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="framestack.Views.RegisterPage"
-             Title="RegisterPage">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="2*"/>
-        </Grid.RowDefinitions>
+             Title="RegisterPage"
+             xmlns:viewmodel="clr-namespace:framestack.ViewModels"
+             xmlns:model="clr-namespace:framestack.Models"
+             x:DataType="viewmodel:RegisterPageViewModel">
+    <FlexLayout
+        Direction="Column"
+    >
         <Label
-        Margin="10"
-        Grid.Row="1"
-        Text="Frame Stack"
-        FontAttributes="Bold"
-        FontSize="64"
-        FontAutoScalingEnabled="True"
-        LineBreakMode="WordWrap"/>
+            Margin="10"
+            Text="Frame Stack"
+            FontAttributes="Bold"
+            FontSize="64"
+            FontAutoScalingEnabled="True"
+            LineBreakMode="WordWrap"/>
+        <Border
+            BackgroundColor="#f7f2fa"
+            StrokeShape="RoundRectangle 40"
+            StrokeThickness="0"
+            Padding="10"
+            Margin="10,5">
+            <Entry
+                Placeholder="First name"
+                BackgroundColor="Transparent"
+                ReturnType="Next"
+                FontSize="20"
+                x:Name="FirstName"/>
+        </Border>
+        <Border
+            BackgroundColor="#f7f2fa"
+            StrokeShape="RoundRectangle 40"
+            StrokeThickness="0"
+            Padding="10"
+            Margin="10,5">
+            <Entry
+                Placeholder="Last name"
+                BackgroundColor="Transparent"
+                ReturnType="Next"
+                FontSize="20"
+                x:Name="LastName"/>
+        </Border>
+        <Border
+            BackgroundColor="#f7f2fa"
+            StrokeShape="RoundRectangle 40"
+            StrokeThickness="0"
+            Padding="10"
+            Margin="10,5">
+            <Entry
+                Placeholder="Email"
+                Keyboard="Email"
+                BackgroundColor="Transparent"
+                ReturnType="Next"
+                FontSize="20"
+                x:Name="Email"/>
+        </Border>
+        <Border
+            BackgroundColor="#f7f2fa"
+            StrokeShape="RoundRectangle 40"
+            StrokeThickness="0"
+            Padding="10"
+            Margin="10,5">
+            <Entry
+                Placeholder="Username"
+                BackgroundColor="Transparent"
+                ReturnType="Next"
+                FontSize="20"
+                ReturnCommand="{Binding UpdateUsernameValueCommand }"
+                x:Name="UsernameEntry"/>
+        </Border>
+        <Border
+            BackgroundColor="#f7f2fa"
+            StrokeShape="RoundRectangle 40"
+            StrokeThickness="0"
+            Padding="10"
+            Margin="10,5">
+            <Entry
+                Placeholder="Password"
+                IsPassword="True"
+                BackgroundColor="Transparent"
+                FontSize="20"
+                x:Name="PasswordEntry"/>
+        </Border>
+        
+        <Border
+            BackgroundColor="#f7f2fa"
+            StrokeShape="RoundRectangle 40"
+            StrokeThickness="0"
+            Padding="10"
+            Margin="10,5">
+            <StackLayout>
+                <Label Text="Date of birth" Margin="5, 0, 0, 0"/>
+                <DatePicker
+                    FontSize="20"
+                    x:Name="DateOfBirthEntry"/>
+            </StackLayout>
+            
+        </Border>
+        
+        
         <Button
-        Margin="10"
-        CornerRadius="100"
-        Grid.Row="7"
-        Text="Register"
-        />
-    </Grid>
+            Margin="10,5"
+            Padding="10"
+            CornerRadius="100"
+            FontSize="20"
+            Text="Register"/>
+        
+        <Label TextColor="Red"
+               x:Name="WarningLabel"/>
+    </FlexLayout>
 </ContentPage>
