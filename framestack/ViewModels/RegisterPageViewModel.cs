@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.Input;
+using framestack.Views;
 
 namespace framestack.ViewModels
 {
@@ -18,14 +21,32 @@ namespace framestack.ViewModels
 
         private CancellationTokenSource UsernameDatabaseCheckToken = new CancellationTokenSource();
         private CancellationTokenSource EmailDatabaseCheckToken = new CancellationTokenSource();
-        
-        [RelayCommand]
-        private async Task UpdateUsernameValue()
-        {
-            await Application.Current.MainPage.Navigation.PopAsync();
 
+        public RegisterPageViewModel()
+        {
+            
         }
         
-        // private async Task Update
+        [RelayCommand]
+        private async Task UpdateUsernameValue(object sender)
+        {
+            CheckUsernameWithDelay("asdf");
+        }
+
+        private async Task CheckUsernameWithDelay(string Username)
+        {
+            UsernameDatabaseCheckToken.Cancel();
+            UsernameDatabaseCheckToken = new CancellationTokenSource();
+            await Task.Delay(1000, UsernameDatabaseCheckToken.Token);
+            //TODO: Check database for value
+            var toast = Toast.Make(Username);
+            toast.Show();
+        }
+        
+        [RelayCommand]
+        private async Task UpdatePasswordValue()
+        {
+            
+        }
     }
 }

@@ -81,6 +81,7 @@
                 IsPassword="True"
                 BackgroundColor="Transparent"
                 FontSize="20"
+                ReturnCommand="{Binding UpdatePasswordValueCommand}"
                 x:Name="PasswordEntry"/>
         </Border>
         

@@ -1,4 +1,6 @@
-﻿using framestack.Services;
+﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Markup;
+using framestack.Services;
 using framestack.ViewModels;
 using framestack.Views;
 using Microsoft.Extensions.Logging;
@@ -12,6 +14,8 @@ namespace framestack
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
+                .UseMauiCommunityToolkitMarkup()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
