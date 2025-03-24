@@ -16,5 +16,29 @@ namespace framestack.Models
             this.name = name;
             this.members = members;
         }
+
+        public void addMember(User user)
+        {  
+            this.members.Add(user);
+        }
+        public void removeMember(User user)
+        {
+            this.members.Remove(user);
+        }
+
+        public List<User> getMembers() 
+        {  
+            return this.members; 
+        }
+
+
+        public void setName(String name)
+        {
+            this.name = name;
+        }
+
+        public String getName() { 
+            return this.name;
+        }
     }
 }
