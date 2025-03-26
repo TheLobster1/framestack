@@ -6,26 +6,25 @@ using System.Threading.Tasks;
 
 namespace framestack.Models
 {
-     class Picture
+    class Video
     {
         private string name;
         private string description;
-        private List<Tag> tags;
         private string filePath;
+        private List<Tag> tags;
 
-        public Picture(string name, string description, string filePath)
+        public Video(string name, string description, string filePath)
         {
             this.name = name;
             this.description = description;
-            this.tags = new List<Tag>();
             this.filePath = filePath;
+            this.tags = new List<Tag> ();
         }
 
         public void setName(string name)
         {
             this.name = name;
         }
-
         public string getName()
         {
             return this.name;
@@ -36,23 +35,28 @@ namespace framestack.Models
             this.description = description;
         }
 
+        public string getDescription()
+        {
+            return this.description;
+        }
+
         public void setFilePath(string filePath)
         {
             this.filePath = filePath;
         }
+        public string getFilePath()
+        {
+            return this.filePath;
+        }
 
         public void addTag(Tag tag)
         {
-            if (!getTags().Contains(tag))
-            {
-                tags.Add(tag);
-            }
-            
+            this.tags.Add(tag);
         }
 
-        public List<Tag> getTags()
+        public void removeTag(Tag tag)
         {
-            return tags;
+            this.tags.Remove(tag);
         }
 
     }

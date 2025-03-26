@@ -10,14 +10,14 @@ namespace framestack.Models
     {
         private DateTime dateCreated;
         private List<Picture> pictureList;
-        private List<Media> media;
+        private List<Video> videoList;
         private List<Album> albums;
 
-        public Account(DateTime dateCreated, List<Media> media, List<Album> albums)
+        public Account(DateTime dateCreated, List<Video> video, List<Album> albums)
         {
             this.dateCreated = dateCreated;
             this.pictureList = new List<Picture>();
-            this.media = media;
+            this.videoList = new List<Video>();
             this.albums = albums;
         }
 
@@ -29,6 +29,27 @@ namespace framestack.Models
         public void deletePicture(Picture picture)
         {
             this.pictureList.Remove(picture);
+        }
+
+        public void createVideo(Video video)
+        {
+            this.videoList.Add(video);
+        }
+
+        public void removeVideo(Video video)
+        {
+            this.videoList.Remove(video);
+        }
+
+        public void addVideos(List<Video> videosToAdd)
+        {
+            foreach (Video v in videosToAdd)
+            {
+                if (!this.videoList.Contains(v))
+                {
+                    this.videoList.Add(v);
+                }
+            }
         }
 
         public void createAlbum(string name, string description)
