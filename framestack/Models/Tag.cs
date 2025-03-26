@@ -8,5 +8,11 @@ namespace framestack.Models
 {
     class Tag
     {
+        private string name;
+
+        public string getName()
+        {
+            return this.name;
+        }
     }
 }
