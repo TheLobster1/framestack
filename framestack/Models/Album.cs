@@ -10,41 +10,57 @@ namespace framestack.Models
     {
         private string name;
         private string description;
-        private List<Picture> pictures;
+        private List<Picture> pictureList;
+        private List<Video> videoList;
 
         public Album(string name)
         {
             this.name = name;
-            this.pictures = new List<Picture>();
+            this.pictureList = new List<Picture>();
+            this.videoList = new List<Video>();
         }
 
         public Album(string name, string description)
         {
             this.name = name;
             this.description = description;
-            this.pictures = new List<Picture>();
+            this.pictureList = new List<Picture>();
+            this.videoList = new List<Video>();
         }
 
         public void addPicture(Picture picture)
         {
-            this.pictures.Add(picture);
+            this.pictureList.Add(picture);
         }
 
         public void removePicture(Picture picture)
         {
-            if (this.pictures.Contains(picture)) 
+            if (this.pictureList.Contains(picture)) 
             { 
-            this.pictures.Remove(picture);
+            this.pictureList.Remove(picture);
             }
+        }
+
+        public void addVideo(Video video)
+        {
+            if (!this.videoList.Contains(video))
+            {
+                this.videoList.Add(video);
+            }
+        }
+
+        public void removeVideo(Video video)
+        {
+            this.videoList.Remove(video);
         }
 
         public void addPictures(IEnumerable<Picture> newPictures)
         {
             foreach (Picture picture in newPictures)
             {
-                if (!this.pictures.Contains(picture))
+                if (!this.pictureList.Contains(picture))
                 {
-                    this.pictures.Add(picture);
+                    this.pictureList.Add(picture);
                 }
             }
         }
@@ -53,7 +69,18 @@ namespace framestack.Models
         {
             foreach (Picture picture in toRemovePictures)
             {
-                this.pictures.Remove(picture);
+                this.pictureList.Remove(picture);
+            }
+        }
+
+        public void addVideos(List<Video> videosToAdd)
+        {
+            foreach (Video video in videosToAdd)
+            {
+                if(!this.videoList.Contains(video))
+                {
+                    this.videoList.Add(video);
+                }
             }
         }
 
