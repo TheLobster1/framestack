@@ -14,5 +14,11 @@ namespace framestack.Models
         {
             return this.name;
         }
+
+        public void setName(string name)
+        {
+            this.name = name;
+        }
+
     }
 }
