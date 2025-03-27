@@ -29,10 +29,9 @@ namespace framestack.Models
         //To test this 
         public async Task<bool> addPhoto()
         {
-            var options = PickOptions.Images;
             try
             {
-                var result = await FilePicker.Default.PickAsync(options);
+                var result = await MediaPicker.PickPhotoAsync();
                 if (result != null)
                 {
                     if (result.FileName.EndsWith("jpg", StringComparison.OrdinalIgnoreCase) ||
