@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace framestack.Models
 {
-    class Album
+    public class Album
     {
         private string name;
         private string? description;
@@ -30,7 +30,7 @@ namespace framestack.Models
         {
             if (this.pictureList.Contains(picture)) 
             { 
-            this.pictureList.Remove(picture);
+                this.pictureList.Remove(picture);
             }
         }
 
@@ -89,7 +89,7 @@ namespace framestack.Models
                 return "No description";
             } else 
             { 
-            return this.description;
+                return this.description;
             }
         }
 

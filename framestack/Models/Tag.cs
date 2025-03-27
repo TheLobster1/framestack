@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace framestack.Models
 {
-    class Tag
+    public class Tag
     {
         private string name;
 

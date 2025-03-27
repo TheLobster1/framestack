@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace framestack.Models
 {
-    class Account
+    public class Account
     {
         private DateTime dateCreated;
         private List<Picture> pictureList;
@@ -27,8 +27,9 @@ namespace framestack.Models
         }
 
         //To test this 
-        public async Task<FileResult> addPhoto(PickOptions options)
+        public async Task<bool> addPhoto()
         {
+            var options = PickOptions.Images;
             try
             {
                 var result = await FilePicker.Default.PickAsync(options);
@@ -46,15 +47,18 @@ namespace framestack.Models
                 }
                 if(result == null)
                 {
-                    throw new Exception("No valid file selected");
+                    return false;
                 }
-
-                return result;
+                var picture = new Picture("TESTING", "No description", result.FileName);
+                pictureList.Add(picture);
+                return true;
             }
             catch (Exception)
             {
-                throw new Exception("Something went wrong");
+               //
             }
+
+            return false ;
         }
 
         public void deletePicture(Picture picture)

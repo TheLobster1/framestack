@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace framestack.Models
 {
-    class Family : Account
+    public class Family : Account
     {
         private string name;
         private List<User> members;
