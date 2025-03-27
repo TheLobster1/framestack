@@ -9,18 +9,11 @@ namespace framestack.Models
     class Album
     {
         private string name;
-        private string description;
+        private string? description;
         private List<Picture> pictureList;
         private List<Video> videoList;
 
-        public Album(string name)
-        {
-            this.name = name;
-            this.pictureList = new List<Picture>();
-            this.videoList = new List<Video>();
-        }
-
-        public Album(string name, string description)
+        public Album(string name, string? description)
         {
             this.name = name;
             this.description = description;
@@ -91,8 +84,14 @@ namespace framestack.Models
         
        public string getDescription()
        {
+            if (this.description == null)
+            {
+                return "No description";
+            } else 
+            { 
             return this.description;
-       }
+            }
+        }
 
         public string setName(string name)
         {

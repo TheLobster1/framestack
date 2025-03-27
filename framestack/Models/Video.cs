@@ -9,11 +9,11 @@ namespace framestack.Models
     class Video
     {
         private string name;
-        private string description;
+        private string? description;
         private string filePath;
         private List<Tag> tags;
 
-        public Video(string name, string description, string filePath)
+        public Video(string name, string? description, string filePath)
         {
             this.name = name;
             this.description = description;
@@ -37,7 +37,13 @@ namespace framestack.Models
 
         public string getDescription()
         {
-            return this.description;
+            if (this.description != null)
+            {
+                return this.description;
+            } else
+            {
+                return "No description";
+            }
         }
 
         public void setFilePath(string filePath)

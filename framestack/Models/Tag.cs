@@ -10,6 +10,11 @@ namespace framestack.Models
     {
         private string name;
 
+        public Tag(string name)
+        {
+            this.name = name;
+        }
+
         public string getName()
         {
             return this.name;
