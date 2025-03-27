@@ -26,6 +26,37 @@ namespace framestack.Models
             this.pictureList.Add(picture);
         }
 
+        //To test this 
+        public async Task<FileResult> addPhoto(PickOptions options)
+        {
+            try
+            {
+                var result = await FilePicker.Default.PickAsync(options);
+                if (result != null)
+                {
+                    if (result.FileName.EndsWith("jpg", StringComparison.OrdinalIgnoreCase) ||
+                        result.FileName.EndsWith("png", StringComparison.OrdinalIgnoreCase) ||
+                        result.FileName.EndsWith("gif", StringComparison.OrdinalIgnoreCase) ||
+                        result.FileName.EndsWith("pdf", StringComparison.OrdinalIgnoreCase) ||
+                        result.FileName.EndsWith("svg", StringComparison.OrdinalIgnoreCase))
+                    {
+                        using var stream = await result.OpenReadAsync();
+                        var image = ImageSource.FromStream(() => stream);
+                    }
+                }
+                if(result == null)
+                {
+                    throw new Exception("No valid file selected");
+                }
+
+                return result;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Something went wrong");
+            }
+        }
+
         public void deletePicture(Picture picture)
         {
             this.pictureList.Remove(picture);
