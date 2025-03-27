@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace framestack.Models
 {
-    class Video
+    public class Video
     {
         private string name;
         private string? description;

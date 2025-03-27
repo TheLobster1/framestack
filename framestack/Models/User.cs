@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace framestack.Models
 {
-    class User : Account
+    public class User : Account
     {
         private string userName;
         private string passWord;
