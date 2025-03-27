@@ -21,8 +21,8 @@ namespace framestack.ViewModels
         private async Task Login()
         {
             // await Application.Current.MainPage.Navigation.PushAsync(new LoginPage(new LoginPageViewModel()));
-            Account.addPhoto();
-            var pictures = Account.getPictureList();
+            await Account.addVideo();
+            var videos = Account.getVideoList();
         }
 
         [RelayCommand]

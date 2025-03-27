@@ -25,8 +25,7 @@ namespace framestack.Models
         {
             this.pictureList.Add(picture);
         }
-
-        //To test this 
+ 
         public async Task<bool> addPhoto()
         {
             try
@@ -65,9 +64,39 @@ namespace framestack.Models
             this.pictureList.Remove(picture);
         }
 
-        public void createVideo(Video video)
+        public async Task<bool> addVideo()
         {
-            this.videoList.Add(video);
+            try
+            {
+                var result = await MediaPicker.PickVideoAsync();
+                if(result != null)
+                {
+                    if(result.FileName.EndsWith("mp4", StringComparison.OrdinalIgnoreCase) || 
+                       result.FileName.EndsWith("wmv", StringComparison.OrdinalIgnoreCase) || 
+                       result.FileName.EndsWith("avi", StringComparison.OrdinalIgnoreCase) || 
+                       result.FileName.EndsWith("flv", StringComparison.OrdinalIgnoreCase) || 
+                       result.FileName.EndsWith("gifv", StringComparison.OrdinalIgnoreCase) ||
+                       result.FileName.EndsWith("mp4", StringComparison.OrdinalIgnoreCase) || 
+                       result.FileName.EndsWith("svi", StringComparison.OrdinalIgnoreCase))
+                    {
+                        using var stream = await result.OpenReadAsync();
+                        var image = ImageSource.FromStream(() => stream);
+                    } 
+                    if(result == null)
+                    {
+                        return false;
+                    }
+                    var video = new Video("testing", null, result.FileName);
+                    videoList.Add(video);
+                    return true;
+                }
+
+            } 
+            catch (Exception)
+            {
+                //
+            }
+            return false;
         }
 
         public void removeVideo(Video video)
@@ -75,16 +104,6 @@ namespace framestack.Models
             this.videoList.Remove(video);
         }
 
-        public void addVideos(List<Video> videosToAdd)
-        {
-            foreach (Video v in videosToAdd)
-            {
-                if (!this.videoList.Contains(v))
-                {
-                    this.videoList.Add(v);
-                }
-            }
-        }
 
         public void removeVideos(List<Video> videosToRemove)
         {
@@ -115,6 +134,11 @@ namespace framestack.Models
         public List<Picture> getPictureList()
         {
             return this.pictureList;
+        }
+
+        public List<Video> getVideoList()
+        {
+            return this.videoList;
         }
 
         public void deletePictures(List<Picture> pictures)
