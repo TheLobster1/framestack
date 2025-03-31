@@ -1,8 +1,5 @@
 @framestackAPI_HostAddress = http://localhost:5151
 
-#GET {{framestackAPI_HostAddress}}/weatherforecast/
-#Accept: application/json
-####
 GET {{framestackAPI_HostAddress}}/picturesfromaccount/{{accountId}}/{{page}}/{{size}}/
 Accept: application/json
 ###
@@ -19,5 +16,11 @@ POST {{framestackAPI_HostAddress}}/addusertofamily/
 Accept: application/json
 ###
 POST {{framestackAPI_HostAddress}}/uploadpicture/
+Accept: application/json
+###
+POST {{framestackAPI_HostAddress}}/updatepicturedetails/
+Accept: application/json
+###
+POST {{framestackAPI_HostAddress}}/deletepicture/
 Accept: application/json
 ###
