@@ -13,14 +13,16 @@ namespace framestack.Models
         private string firstName;
         private string lastName;
         private string eMail;
+        private DateTime dateOfBirth;
 
-        public User(string userName, string passWord, string firstName, string lastName, string eMail, DateTime dateCreated, List<Album> albums) : base(dateCreated, albums)
+        public User(string userName, string passWord, string firstName, string lastName, string eMail, DateTime dateOfBirth, List<Album> albums) : base(albums)
         {
             this.userName = userName;
             this.passWord = passWord;
             this.firstName = firstName;
             this.lastName = lastName;
             this.eMail = eMail;
+            this.dateOfBirth = dateOfBirth;
         }
 
         public void setPassword(string password)

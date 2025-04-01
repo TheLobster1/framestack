@@ -11,7 +11,7 @@ namespace framestack.Models
         private string name;
         private List<User> members;
 
-        public Family(string name, List<User> members, DateTime dateCreated, List<Album> albums) : base(dateCreated, albums)
+        public Family(string name, List<User> members, DateTime dateOfBirth, List<Album> albums) : base(albums)
         {
             this.name = name;
             this.members = members;

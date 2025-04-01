@@ -11,14 +11,16 @@ namespace framestack.Models
         private string name;
         private string? description;
         private List<Tag> tags;
+        private DateTime dateCreated;
         private string filePath;
 
-        public Picture(string name, string? description, string filePath)
+        public Picture(string name, string? description, DateTime dateCreated, List<Tag> tags, string filePath)
         {
             this.name = name;
             this.description = description;
-            this.tags = new List<Tag>();
+            this.tags = tags;
             this.filePath = filePath;
+            this.dateCreated = dateCreated;
         }
 
         public void setName(string name)

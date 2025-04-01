@@ -1,3 +1,4 @@
+using System.Net.Mail;
 using framestackAPI;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -19,43 +20,44 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/picturesfromaccount/{accountId}/{page}/{size}", (HttpRequest request) =>
+app.MapGet("/picturesfromaccount/{accountId}/{page}/{size}", async (HttpRequest request) =>
 {
-    var id = request.RouteValues["accountId"];
-    var page = request.RouteValues["page"];
-    var pageSize = request.RouteValues["size"];
-
     var pictures = new List<Picture>();
-    try
-    {
-        //todo: check if values are INT;
-    }
-    catch
-    {
-        return pictures;
-    }
-    //get pictures
-    pictures.Add(new Picture("", "nice", "MORE NICE", 10));
-
-    return pictures;
+    if (!int.TryParse(request.RouteValues["accountId"].ToString(), out int id)) return pictures;
+    if (!int.TryParse(request.RouteValues["page"].ToString(), out int page)) return pictures;
+    if (!int.TryParse(request.RouteValues["size"].ToString(), out int size)) return pictures;
+    var result = await DatabaseConnection.GetPicturesFromAccount(id, page, size);
+    return result;
 })
     .WithName("GetPictures");
 
-// app.MapPost("/createuser",)
-
-app.MapPost("/uploadpicture/{accountId}", async Task<Results<Ok<string>, BadRequest<string>>>
-    ([FromForm] FormFile fileUploadForm, HttpContext context, IAntiforgery antiforgery, HttpRequest request) =>
+app.MapPost("/createuser", async (HttpRequest request) =>
 {
-    var idObject = request.RouteValues["accountId"];
-    if (idObject == null) return TypedResults.BadRequest("Please provide a valid account Id");
-    var id = idObject.ToString();
+    //TODO: check if username or email are taken and password size is correct.
+    var username = request.Query["username"];
+    var password = request.Query["password"];
+    var email = request.Query["email"];
+    var firstName = request.Query["firstName"];
+    var lastName = request.Query["lastName"];
+    if (!DateTime.TryParse(request.Query["dateOfBirth"], out DateTime dateOfBirth)) return "Invalid date of birth";
+    if (!MailAddress.TryCreate(email, out MailAddress mailAddress)) return "Invalid mail address";
+    if (password.Count != 60) return "Invalid password";
+    var result = await DatabaseConnection.CreateUser(username, password, dateOfBirth, email, firstName, lastName);
+    return result;
+});
+
+app.MapPost("/uploadpicture", async Task<Results<Ok<string>, BadRequest<string>>>
+    ([FromForm] FormFile fileUploadForm, HttpContext context) =>
+{
+    var id = "0";
     if (fileUploadForm == null) return TypedResults.BadRequest("Please provide a file");
     if (fileUploadForm.FileName == null || fileUploadForm.FileName == "") return TypedResults.BadRequest("Please provide a file name");
     await Utils.UploadFile(fileUploadForm, id);
 
     return TypedResults.Ok($"Uploaded file {fileUploadForm.FileName} successfully");
-});
+})
+    .WithName("UploadPicture");
 
 app.Run();
 
-record Picture(string Url, string? Title, string? Description, int Id);
+public record Picture(string Url, string? Title, string? Description, int Id, DateTime DateCreated, int AccountId);
