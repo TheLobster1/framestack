@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using framestack.Views;
 
@@ -19,6 +20,19 @@ namespace framestack.ViewModels
         private bool allowedPassword = false;
         private bool allowedDateOfBirth = false;
 
+        [ObservableProperty]
+        public string username;
+        [ObservableProperty]
+        public string firstname;
+        [ObservableProperty]
+        public string lastname;
+        [ObservableProperty]
+        public string email;
+        [ObservableProperty]
+        public string password;
+        [ObservableProperty]
+        public DateTime dateOfBirth;
+
         private CancellationTokenSource UsernameDatabaseCheckToken = new CancellationTokenSource();
         private CancellationTokenSource EmailDatabaseCheckToken = new CancellationTokenSource();
 
@@ -28,9 +42,9 @@ namespace framestack.ViewModels
         }
         
         [RelayCommand]
-        private async Task UpdateUsernameValue(object sender)
+        private async Task Register()
         {
-            CheckUsernameWithDelay("asdf");
+            //TODO: Register user using the RestService
         }
 
         private async Task CheckUsernameWithDelay(string Username)
