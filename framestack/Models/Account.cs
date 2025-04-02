@@ -8,14 +8,12 @@ namespace framestack.Models
 {
     public class Account
     {
-        private DateTime dateCreated;
         private List<Picture> pictureList;
         private List<Video> videoList;
         private List<Album> albums;
 
-        public Account(DateTime dateCreated, List<Album> albums)
+        public Account(List<Album> albums)
         {
-            this.dateCreated = dateCreated;
             this.pictureList = new List<Picture>();
             this.videoList = new List<Video>();
             this.albums = albums;
@@ -47,7 +45,7 @@ namespace framestack.Models
                 {
                     return false;
                 }
-                var picture = new Picture("TESTING", "No description", result.FileName);
+                var picture = new Picture("TESTING", "No description", DateTime.Now, new List<Tag>(), result.FileName);
                 pictureList.Add(picture);
                 return true;
             }

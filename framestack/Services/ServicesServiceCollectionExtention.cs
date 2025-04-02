@@ -13,6 +13,7 @@ namespace framestack.Services
         {
             services.AddTransient<DatabaseConnectionService>();
             services.AddTransient<PictureUploadService>();
+            // services.AddTransient<RestService>();
 
             return services;
         }
