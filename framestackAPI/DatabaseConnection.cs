@@ -19,14 +19,16 @@ public static class DatabaseConnection
             bool userExists = false;
             MySqlCommand command = new MySqlCommand();
             command.Connection = _connection;
-            command.CommandText = $@"SELECT COUNT(*) as count_user FROM useraccount where Email = @Email;";
+            command.CommandText = $@"SELECT COUNT(*) AS count_user FROM useraccount WHERE Email = @Email OR Username = @Username;";
             command.Parameters.AddWithValue("@Email", Email);
+            command.Parameters.AddWithValue("@Username", UserName);
             var reader = command.ExecuteReader();
             while (reader.Read())
             {
                 var count_user = reader.GetInt32("count_user");
                 userExists = count_user != 0;
             }
+            reader.Close();
             if (userExists)
             {
                 _connection.Close();
@@ -35,12 +37,8 @@ public static class DatabaseConnection
             command = new MySqlCommand();
             command.Connection = _connection;
             command.CommandText = $@"INSERT INTO `account` (`Id`, `Created`) VALUES (NULL, NOW());";
-            var accountReader = command.ExecuteReader();
-            var accountId = -1;
-            while (accountReader.Read())
-            {
-                accountId = accountReader.GetInt32("id");
-            }
+            command.ExecuteNonQuery();
+            var accountId = command.LastInsertedId;     //COULD BE FAULTY DUE TO MULTIPLE USERS AT SAME TIME
             if (accountId == -1)
             {
                 _connection.Close();
@@ -56,18 +54,9 @@ public static class DatabaseConnection
             command.Parameters.AddWithValue("@BirthDate", DOB);
             command.Parameters.AddWithValue("@Email", Email);
             command.Parameters.AddWithValue("@Password", PassWord);
-            var userReader = command.ExecuteReader();
-            string firstName = null;
-            string lastName = null;
-            string userName = null;
-            while (userReader.Read())
-            {
-                firstName = userReader.GetString("Firstname");
-                lastName = userReader.GetString("Lastname");
-                userName = userReader.GetString("Username");
-            }
+            command.ExecuteNonQuery();
             _connection.Close();
-            return $"Hi{firstName} {lastName}! The account with username {userName} has been created.";
+            return $"Hi{FirstName} {LastName}! The account with username {UserName} has been created.";
         }
         catch (MySqlException ex)
         {

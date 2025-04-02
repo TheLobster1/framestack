@@ -2,18 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace framestack.Models
 {
     public class User : Account
     {
-        private string userName;
-        private string passWord;
-        private string firstName;
-        private string lastName;
-        private string eMail;
-        private DateTime dateOfBirth;
+        [JsonPropertyName("userName")]
+        public string userName { get; set; }
+        [JsonPropertyName("password")]
+        public string passWord { get; set; }
+        [JsonPropertyName("firstName")]
+        public string firstName { get; set; }
+        [JsonPropertyName("lastName")]
+        public string lastName { get; set; }
+        [JsonPropertyName("email")]
+        public string eMail { get; set; }
+        [JsonPropertyName("dateOfBirth")]
+        public DateTime dateOfBirth { get; set; }
 
         public User(string userName, string passWord, string firstName, string lastName, string eMail, DateTime dateOfBirth, List<Album> albums) : base(albums)
         {

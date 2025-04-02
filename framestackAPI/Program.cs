@@ -33,16 +33,10 @@ app.MapGet("/picturesfromaccount/{accountId}/{page}/{size}", async (HttpRequest 
 
 app.MapPost("/createuser", async (HttpRequest request) =>
 {
-    //TODO: check if username or email are taken and password size is correct.
-    var username = request.Query["username"];
-    var password = request.Query["password"];
-    var email = request.Query["email"];
-    var firstName = request.Query["firstName"];
-    var lastName = request.Query["lastName"];
-    if (!DateTime.TryParse(request.Query["dateOfBirth"], out DateTime dateOfBirth)) return "Invalid date of birth";
-    if (!MailAddress.TryCreate(email, out MailAddress mailAddress)) return "Invalid mail address";
-    if (password.Count != 60) return "Invalid password";
-    var result = await DatabaseConnection.CreateUser(username, password, dateOfBirth, email, firstName, lastName);
+    var test = await request.ReadFromJsonAsync<User>();
+    if (!MailAddress.TryCreate(test.Email, out MailAddress mailAddress)) return "Invalid mail address";
+    if (test.Password.Length != 60) return "Invalid password";
+    var result = await DatabaseConnection.CreateUser(test.Username, test.Password, test.DateOfBirth, test.Email, test.FirstName, test.LastName);
     return result;
 });
 
@@ -61,3 +55,5 @@ app.MapPost("/uploadpicture", async Task<Results<Ok<string>, BadRequest<string>>
 app.Run();
 
 public record Picture(string Url, string? Title, string? Description, int Id, DateTime DateCreated, int AccountId);
+
+public record User(string Username, string Password, DateTime DateOfBirth, string Email, string FirstName, string LastName);
