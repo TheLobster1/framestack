@@ -11,14 +11,14 @@ namespace framestack.Models
         private string name;
         private string? description;
         private List<Picture> pictureList;
-        private List<Video> videoList;
+        // private List<Video> videoList;
 
         public Album(string name, string? description)
         {
             this.name = name;
             this.description = description;
             this.pictureList = new List<Picture>();
-            this.videoList = new List<Video>();
+            // this.videoList = new List<Video>();
         }
 
         public void addPicture(Picture picture)
@@ -34,18 +34,18 @@ namespace framestack.Models
             }
         }
 
-        public void addVideo(Video video)
-        {
-            if (!this.videoList.Contains(video))
-            {
-                this.videoList.Add(video);
-            }
-        }
+        // public void addVideo(Video video)
+        // {
+        //     if (!this.videoList.Contains(video))
+        //     {
+        //         this.videoList.Add(video);
+        //     }
+        // }
 
-        public void removeVideo(Video video)
-        {
-            this.videoList.Remove(video);
-        }
+        // public void removeVideo(Video video)
+        // {
+        //     this.videoList.Remove(video);
+        // }
 
         public void addPictures(IEnumerable<Picture> newPictures)
         {
@@ -66,16 +66,16 @@ namespace framestack.Models
             }
         }
 
-        public void addVideos(List<Video> videosToAdd)
-        {
-            foreach (Video video in videosToAdd)
-            {
-                if(!this.videoList.Contains(video))
-                {
-                    this.videoList.Add(video);
-                }
-            }
-        }
+        // public void addVideos(List<Video> videosToAdd)
+        // {
+        //     foreach (Video video in videosToAdd)
+        //     {
+        //         if(!this.videoList.Contains(video))
+        //         {
+        //             this.videoList.Add(video);
+        //         }
+        //     }
+        // }
 
         public void setDescription(string description)
         {
