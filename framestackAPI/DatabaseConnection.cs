@@ -77,18 +77,57 @@ public static class DatabaseConnection
             _connection.Open();
             MySqlCommand command = new MySqlCommand();
             command.Connection = _connection;
-            command.CommandText = $@"SELECT * FROM picture where AccountId = @AccountId order by DateCreated LIMIT {size} OFFSET {page * size};";
+            // command.CommandText = $@"SELECT * FROM picture where AccountId = @AccountId order by DateCreated LIMIT {size} OFFSET {page * size};";
+            command.CommandText = $@"
+                                    SELECT
+                                        p.Id AS PictureID,
+                                        p.Name AS PictureName,
+                                        p.Description AS PictureDescription,
+                                        p.File AS PictureFilepath,
+                                        p.DateCreated AS PictureCreationDate,
+                                        p.AccountId,
+                                        -- This part concatenates the tag names. The specific function might vary
+                                        -- depending on your SQL database system (see notes below).
+                                        GROUP_CONCAT(t.name SEPARATOR ',') AS Tags
+                                    FROM
+                                        picture p
+                                    LEFT JOIN
+                                        picturetagconnect ptc ON p.ID = ptc.PictureId
+                                    LEFT JOIN
+                                        tag t ON ptc.TagId = t.ID
+                                    WHERE
+                                        p.AccountId = @AccountId -- <-- Replace :userId with the actual user account ID
+                                    GROUP BY
+                                        p.Id,  -- Group by all picture columns to get one row per picture
+                                        p.Name,
+                                        p.Description,
+                                        p.File,
+                                        p.DateCreated,
+                                        p.AccountId
+                                    ORDER BY
+                                        p.DateCreated DESC LIMIT {size} OFFSET {page * size}; -- Optional: order pictures, e.g., by creation date
+                                    ";
             command.Parameters.AddWithValue("@AccountId", accountId);
             var reader = command.ExecuteReader();
             while (reader.Read())
             {
-                var Id = reader.GetInt32("Id");
-                var Name = reader.GetString("Name");
-                var Description = reader.GetString("Description");
-                var DateCreated = reader.GetDateTime("DateCreated");
-                var File = reader.GetString("File");
+                var Id = reader.GetInt32("PictureId");
+                var Name = reader.GetString("PictureName");
+                var Description = reader.GetString("PictureDescription");
+                var DateCreated = reader.GetDateTime("PictureCreationDate");
+                var File = reader.GetString("PictureFilePath");
                 var AccountId = reader.GetInt32("AccountId");
-                Picture picture = new(File, Name, Description, Id, DateCreated, AccountId);
+                var Tags = reader.GetString("Tags");
+                var TagList = new List<Tag>();
+                if (!string.IsNullOrEmpty(Tags))
+                {
+                    var tags = Tags.Split(',');
+                    foreach (var tag in tags)
+                    {
+                        TagList.Add(new Tag(tag));
+                    }
+                }
+                Picture picture = new(File, Name, Description, Id, DateCreated, AccountId, TagList);
                 pictures.Add(picture);
             }
             _connection.Close();

@@ -54,6 +54,8 @@ app.MapPost("/uploadpicture", async Task<Results<Ok<string>, BadRequest<string>>
 
 app.Run();
 
-public record Picture(string Url, string? Title, string? Description, int Id, DateTime DateCreated, int AccountId);
-
-public record User(string Username, string Password, DateTime DateOfBirth, string Email, string FirstName, string LastName);
+public record Picture(string Url, string? Title, string? Description, int Id, DateTime DateCreated, int AccountId, List<Tag>? Tags);
+public record User(string Username, string Password, DateTime DateOfBirth, string Email, string FirstName, string LastName, List<Picture>? PictureList, List<Album>? Albums);
+public record Album(string Name, string? Description, List<Picture>? PictureList);
+public record Tag(string Name);
+public record Family(string Name, string? Description, List<Picture>? PictureList, List<Album>? Albums);

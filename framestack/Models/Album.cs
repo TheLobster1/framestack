@@ -2,15 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace framestack.Models
 {
     public class Album
     {
-        private string name;
-        private string? description;
-        private List<Picture> pictureList;
+        [JsonPropertyName("name")]
+        public string name;
+        [JsonPropertyName("description")]
+        public string? description;
+        [JsonPropertyName("pictureList")]
+        public List<Picture> pictureList;
         // private List<Video> videoList;
 
         public Album(string name, string? description)

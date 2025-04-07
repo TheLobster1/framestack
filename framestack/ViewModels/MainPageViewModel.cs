@@ -24,9 +24,10 @@ namespace framestack.ViewModels
             // await Application.Current.MainPage.Navigation.PushAsync(new LoginPage(new LoginPageViewModel()));
             // Account.addPhoto();
             // var pictures = Account.getPictureList();
-            User testUser = new User("bobert", "$2a$12$FC0Jxqoi5XeUiLo.5hH7a.vyU5IGw0O869FQVo1UiJNmkfTz0JyYG", "Rob",
-                "Veldman", "rjeveldman@hotmail.nl", new DateTime(2003, 4, 9), new List<Album>());
-            var result = await RestService.CreateUser(testUser);
+            // User testUser = new User("bobert", "$2a$12$FC0Jxqoi5XeUiLo.5hH7a.vyU5IGw0O869FQVo1UiJNmkfTz0JyYG", "Rob",
+            //     "Veldman", "rjeveldman@hotmail.nl", new DateTime(2003, 4, 9), new List<Album>());
+            // var result = await RestService.CreateUser(testUser);
+            var pictures = await RestService.GetPictures(1);
         }
 
         [RelayCommand]

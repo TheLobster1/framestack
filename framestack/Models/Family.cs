@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace framestack.Models
 {
     public class Family : Account
     {
-        private string name;
-        private List<User> members;
+        [JsonPropertyName("name")]
+        public string name { get; set; }
+        [JsonPropertyName("members")]
+        public List<User> members { get; set; }
 
         public Family(string name, List<User> members, DateTime dateOfBirth, List<Album> albums) : base(albums)
         {

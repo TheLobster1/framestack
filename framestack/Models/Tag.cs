@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace framestack.Models
 {
     public class Tag
     {
-        private string name;
+        [JsonPropertyName("name")]
+        public string name { get; set; }
 
         public Tag(string name)
         {

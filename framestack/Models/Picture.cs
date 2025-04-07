@@ -2,70 +2,76 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace framestack.Models
 {
      public class Picture
     {
-        private string name;
-        private string? description;
-        private List<Tag> tags;
-        private DateTime dateCreated;
-        private string filePath;
+        [JsonPropertyName("name")]
+        public string Name {get; set;}
+        [JsonPropertyName("description")]
+        public string? Description {get; set;}
+        [JsonPropertyName("tags")]
+        public List<Tag> Tags {get; set;}
+        [JsonPropertyName("dateCreated")]
+        public DateTime DateCreated {get; set;}
+        [JsonPropertyName("filePath")]
+        public string FilePath {get; set;}
 
         public Picture(string name, string? description, DateTime dateCreated, List<Tag> tags, string filePath)
         {
-            this.name = name;
-            this.description = description;
-            this.tags = tags;
-            this.filePath = filePath;
-            this.dateCreated = dateCreated;
+            this.Name = name;
+            this.Description = description;
+            this.Tags = tags;
+            this.FilePath = filePath;
+            this.DateCreated = dateCreated;
         }
 
-        public void setName(string name)
+        public void SetName(string name)
         {
-            this.name = name;
+            this.Name = name;
         }
 
-        public string getName()
+        public string GetName()
         {
-            return this.name;
+            return this.Name;
         }
 
-        public void setDescription(string description)
+        public void SetDescription(string description)
         {
-            this.description = description;
+            this.Description = description;
         }
 
-        public string getDescription()
+        public string GetDescription()
         {
-            if (this.description != null)
+            if (this.Description != null)
             {
-                return this.description;
+                return this.Description;
             } else
             {
                 return "No description";
             }
         }
 
-        public void setFilePath(string filePath)
+        public void SetFilePath(string filePath)
         {
-            this.filePath = filePath;
+            this.FilePath = filePath;
         }
 
-        public void addTag(Tag tag)
+        public void AddTag(Tag tag)
         {
-            if (!getTags().Contains(tag))
+            if (!GetTags().Contains(tag))
             {
-                tags.Add(tag);
+                Tags.Add(tag);
             }
             
         }
 
-        public List<Tag> getTags()
+        public List<Tag> GetTags()
         {
-            return tags;
+            return Tags;
         }
 
     }

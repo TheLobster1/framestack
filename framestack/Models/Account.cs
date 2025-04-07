@@ -11,6 +11,7 @@ namespace framestack.Models
     {
         [JsonPropertyName("pictureList")]
         private List<Picture> pictureList;
+        [JsonPropertyName("albums")]
         private List<Album> albums;
 
         public Account(List<Album> albums)

@@ -25,7 +25,7 @@ public static class RestService
     {
         var result = new List<Picture>();
         Uri restUri = new Uri(_restUrl);
-        Uri uri = new Uri(restUri, "/picturesfromaccount/" + "/" + accountId.ToString() + "/" + page.ToString() + "/" + pageSize.ToString());
+        Uri uri = new Uri(restUri, "/picturesfromaccount/" + accountId.ToString() + "/" + page.ToString() + "/" + pageSize.ToString());
         try
         {
             HttpResponseMessage response = await _client.GetAsync(uri);
