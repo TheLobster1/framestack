@@ -78,4 +78,10 @@
 	  </MauiXaml>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Reference Include="Microsoft.AspNetCore.Http">
+	    <HintPath>..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\9.0.3\Microsoft.AspNetCore.Http.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+
 </Project>

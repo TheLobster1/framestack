@@ -9,7 +9,7 @@ public static class DatabaseConnection
     private static string _databasePassword = "";
     private static string _databaseName = "framestack";
 
-    public static async Task<string> CreateUser(string UserName, string PassWord, DateTime DOB, string Email, string FirstName, string LastName)
+    public static async Task<string> CreateUser(string userName, string passWord, DateTime dob, string email, string firstName, string lastName)
     {
         string connectionString = "server="+_databaseServer+";uid="+_databaseUser+";pwd="+_databasePassword+";database="+_databaseName;
         MySqlConnection _connection = new MySqlConnection(connectionString);
@@ -20,8 +20,8 @@ public static class DatabaseConnection
             MySqlCommand command = new MySqlCommand();
             command.Connection = _connection;
             command.CommandText = $@"SELECT COUNT(*) AS count_user FROM useraccount WHERE Email = @Email OR Username = @Username;";
-            command.Parameters.AddWithValue("@Email", Email);
-            command.Parameters.AddWithValue("@Username", UserName);
+            command.Parameters.AddWithValue("@Email", email);
+            command.Parameters.AddWithValue("@Username", userName);
             var reader = command.ExecuteReader();
             while (reader.Read())
             {
@@ -48,15 +48,15 @@ public static class DatabaseConnection
             command.Connection = _connection;
             command.CommandText = $@"INSERT INTO `useraccount` (`Id`, `UserName`, `FirstName`, `LastName`, `DateOfBirth`, `Email`, `Password`) VALUES (@accountId, @Username, @Firstname, @Lastname, @BirthDate, @Email, @Password);";
             command.Parameters.AddWithValue("@accountId", accountId);
-            command.Parameters.AddWithValue("@Username", UserName);
-            command.Parameters.AddWithValue("@Firstname", FirstName);
-            command.Parameters.AddWithValue("@Lastname", LastName);
-            command.Parameters.AddWithValue("@BirthDate", DOB);
-            command.Parameters.AddWithValue("@Email", Email);
-            command.Parameters.AddWithValue("@Password", PassWord);
+            command.Parameters.AddWithValue("@Username", userName);
+            command.Parameters.AddWithValue("@Firstname", firstName);
+            command.Parameters.AddWithValue("@Lastname", lastName);
+            command.Parameters.AddWithValue("@BirthDate", dob);
+            command.Parameters.AddWithValue("@Email", email);
+            command.Parameters.AddWithValue("@Password", passWord);
             command.ExecuteNonQuery();
             _connection.Close();
-            return $"Hi{FirstName} {LastName}! The account with username {UserName} has been created.";
+            return $"Hi{firstName} {lastName}! The account with username {userName} has been created.";
         }
         catch (MySqlException ex)
         {
@@ -140,6 +140,35 @@ public static class DatabaseConnection
             //Ignore
         }
         return new List<Picture>();
+    }
+
+    public static async Task<bool> CreatePicture(string name, string description, string filePath, string accountId)
+    {
+        string connectionString = "server=" + _databaseServer + ";uid=" + _databaseUser + ";pwd=" + _databasePassword +
+                                  ";database=" + _databaseName;
+        MySqlConnection connection = new MySqlConnection(connectionString);
+        try
+        {
+            connection.Open();
+            var command = new MySqlCommand();
+            command.Connection = connection;
+            command.CommandText = $@"INSERT INTO `picture` (`Id`, `DateCreated`, `Name`, `Description`, `File`, `AccountId`) VALUES (NULL, NULL, @Name, @Description, @File, @AccountId);";
+            command.Parameters.AddWithValue("@Name", name);
+            command.Parameters.AddWithValue("@Description", description);
+            command.Parameters.AddWithValue("@File", filePath);
+            command.Parameters.AddWithValue("@AccountId", accountId);
+            command.ExecuteNonQuery();
+            connection.Close();
+            return true;
+        }
+        catch (MySqlException ex)
+        {
+            connection.Close();
+            Console.WriteLine(ex.Message);
+            //Ignore
+        }
+
+        return false;
     }
 
 

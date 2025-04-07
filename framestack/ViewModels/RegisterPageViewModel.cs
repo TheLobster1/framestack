@@ -56,11 +56,5 @@ namespace framestack.ViewModels
             var toast = Toast.Make(Username);
             toast.Show();
         }
-        
-        [RelayCommand]
-        private async Task UpdatePasswordValue()
-        {
-            
-        }
     }
 }

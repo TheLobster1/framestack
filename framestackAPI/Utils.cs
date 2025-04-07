@@ -2,10 +2,12 @@
 
 public static class Utils
 {
-    //TODO: EXPLAIN WHAT THIS DOES
-    public static async Task UploadFile(FormFile fileUploadForm, string accountId)
+    //Change this value to the location you would like your pictures to be stored.
+    private const string filePath = "D:\\FrameStackPictures";
+
+    public static async Task<string> UploadFile(FormFile fileUploadForm, string accountId)
     {
-        string pathToSave = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
+        string pathToSave = Path.Combine(filePath, "uploads");
         if (!Directory.Exists(pathToSave)) Directory.CreateDirectory(pathToSave);
         var userPath = Path.Combine(pathToSave, accountId);
         if (!Directory.Exists(userPath)) Directory.CreateDirectory(userPath);
@@ -17,5 +19,6 @@ public static class Utils
 
         await using FileStream stream = new (fullFilePath, FileMode.Create);
         await fileUploadForm.CopyToAsync(stream);
+        return fullFilePath;
     }
 }

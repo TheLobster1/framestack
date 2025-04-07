@@ -38,17 +38,21 @@ app.MapPost("/createuser", async (HttpRequest request) =>
     if (test.Password.Length != 60) return "Invalid password";
     var result = await DatabaseConnection.CreateUser(test.Username, test.Password, test.DateOfBirth, test.Email, test.FirstName, test.LastName);
     return result;
-});
+})
+    .WithName("CreateUser");
 
 app.MapPost("/uploadpicture", async Task<Results<Ok<string>, BadRequest<string>>>
     ([FromForm] FormFile fileUploadForm, HttpContext context) =>
 {
-    var id = "0";
+    var name = fileUploadForm.FileName;
+    var description = fileUploadForm.FileName;
+    var accountId = "1";
     if (fileUploadForm == null) return TypedResults.BadRequest("Please provide a file");
-    if (fileUploadForm.FileName == null || fileUploadForm.FileName == "") return TypedResults.BadRequest("Please provide a file name");
-    await Utils.UploadFile(fileUploadForm, id);
-
-    return TypedResults.Ok($"Uploaded file {fileUploadForm.FileName} successfully");
+    if (string.IsNullOrEmpty(fileUploadForm.FileName)) return TypedResults.BadRequest("Please provide a file name");
+    var filePath = await Utils.UploadFile(fileUploadForm, accountId);
+    var success = await DatabaseConnection.CreatePicture(name, description, filePath, accountId);
+    if (success) return TypedResults.Ok($"Uploaded file {fileUploadForm.FileName} successfully");
+    return TypedResults.BadRequest("Failed to add picture to database");
 })
     .WithName("UploadPicture");
 

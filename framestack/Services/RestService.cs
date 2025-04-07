@@ -2,6 +2,7 @@
 using System.Text;
 using System.Text.Json;
 using framestack.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace framestack.Services;
 
@@ -53,8 +54,32 @@ public static class RestService
         var result = "";
         Uri restUri = new Uri(_restUrl);
         Uri uri = new Uri(restUri, "/createuser");
-        string json = JsonSerializer.Serialize<User>(user, _serializerOptions); //TODO ADD JSON PROPERTY THINGS TO CLASS
+        string json = JsonSerializer.Serialize<User>(user, _serializerOptions);
         HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+        try
+        {
+            HttpResponseMessage response = await _client.PostAsync(uri, content);
+            if (response.IsSuccessStatusCode)
+            {
+                return "Success";
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+        }
+        return "Something went wrong";
+    }
+//TODO: TEST THIS!!!
+    public static async Task<string> UploadPicture(FileResult fileResult, string accountId, List<Tag> tags)
+    {
+        var result = "";
+        Uri restUri = new Uri(_restUrl);
+        Uri uri = new Uri(restUri, "/createuser");
+        var stream = await fileResult.OpenReadAsync();
+        // FormFile file = new FormFile(stream, 0, stream.Length, fileResult.FileName, fileResult.FileName);
+        var content = new MultipartFormDataContent();
+        content.Add(new StreamContent(stream), "file", fileResult.FileName);
         try
         {
             HttpResponseMessage response = await _client.PostAsync(uri, content);

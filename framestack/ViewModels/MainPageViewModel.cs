@@ -27,7 +27,12 @@ namespace framestack.ViewModels
             // User testUser = new User("bobert", "$2a$12$FC0Jxqoi5XeUiLo.5hH7a.vyU5IGw0O869FQVo1UiJNmkfTz0JyYG", "Rob",
             //     "Veldman", "rjeveldman@hotmail.nl", new DateTime(2003, 4, 9), new List<Album>());
             // var result = await RestService.CreateUser(testUser);
-            var pictures = await RestService.GetPictures(1);
+            // var pictures = await RestService.GetPictures(1);
+            var picture = await MediaPicker.PickPhotoAsync();
+            if (picture != null)
+            {
+                RestService.UploadPicture(picture, "1", new List<Tag>());
+            }
         }
 
         [RelayCommand]
