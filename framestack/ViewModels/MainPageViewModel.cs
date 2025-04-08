@@ -13,7 +13,6 @@ namespace framestack.ViewModels
 {
     public partial class MainPageViewModel : ViewModel
     {
-        private Account Account { get; set; } = new Account([]);
         public MainPageViewModel()
         {
         }
@@ -21,18 +20,20 @@ namespace framestack.ViewModels
         [RelayCommand]
         private async Task Login()
         {
-            // await Application.Current.MainPage.Navigation.PushAsync(new LoginPage(new LoginPageViewModel()));
+            await Application.Current.MainPage.Navigation.PushAsync(new LoginPage(new LoginPageViewModel()));
             // Account.addPhoto();
             // var pictures = Account.getPictureList();
             // User testUser = new User("bobert", "$2a$12$FC0Jxqoi5XeUiLo.5hH7a.vyU5IGw0O869FQVo1UiJNmkfTz0JyYG", "Rob",
             //     "Veldman", "rjeveldman@hotmail.nl", new DateTime(2003, 4, 9), new List<Album>());
             // var result = await RestService.CreateUser(testUser);
             // var pictures = await RestService.GetPictures(1);
-            var picture = await MediaPicker.PickPhotoAsync();
-            if (picture != null)
-            {
-                RestService.UploadPicture(picture, "1", new List<Tag>());
-            }
+            // var picture = await MediaPicker.PickPhotoAsync();
+            // if (picture != null)
+            // {
+            //     RestService.UploadPicture(picture, new User("bobert", "$2a$12$FC0Jxqoi5XeUiLo.5hH7a.vyU5IGw0O869FQVo1UiJNmkfTz0JyYG", "Rob", "Veldman", "rjeveldman@hotmail.nl", new DateTime(2003, 4, 9),
+            //             []),
+            //         []);
+            // }
         }
 
         [RelayCommand]

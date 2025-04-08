@@ -7,6 +7,8 @@ using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using framestack.Models;
+using framestack.Services;
 using framestack.Views;
 
 namespace framestack.ViewModels
@@ -32,6 +34,8 @@ namespace framestack.ViewModels
         public string password;
         [ObservableProperty]
         public DateTime dateOfBirth;
+        [ObservableProperty]
+        public string errorMessage;
 
         private CancellationTokenSource UsernameDatabaseCheckToken = new CancellationTokenSource();
         private CancellationTokenSource EmailDatabaseCheckToken = new CancellationTokenSource();
@@ -47,12 +51,13 @@ namespace framestack.ViewModels
             //TODO: Register user using the RestService
         }
 
-        private async Task CheckUsernameWithDelay(string Username)
+        private async Task CheckUsernameWithDelay(User user)
         {
             UsernameDatabaseCheckToken.Cancel();
             UsernameDatabaseCheckToken = new CancellationTokenSource();
             await Task.Delay(1000, UsernameDatabaseCheckToken.Token);
             //TODO: Check database for value
+            RestService.CheckUser(user);
             var toast = Toast.Make(Username);
             toast.Show();
         }

@@ -6,6 +6,9 @@ Accept: application/json
 GET {{framestackAPI_HostAddress}}/users/
 Accept: application/json
 ###
+GET {{framestackAPI_HostAddress}}/userdetails/
+Accept: application/json
+###
 POST {{framestackAPI_HostAddress}}/checkpassword/
 Accept: application/json
 ###
@@ -24,3 +27,5 @@ Accept: application/json
 POST {{framestackAPI_HostAddress}}/deletepicture/
 Accept: application/json
 ###
+POST {{framestackAPI_HostAddress}}/verifypassword
+Accept: application/json

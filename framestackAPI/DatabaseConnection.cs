@@ -142,7 +142,7 @@ public static class DatabaseConnection
         return new List<Picture>();
     }
 
-    public static async Task<bool> CreatePicture(string name, string description, string filePath, string accountId)
+    public static async Task<bool> CreatePicture(string name, string description, string filePath, string email)
     {
         string connectionString = "server=" + _databaseServer + ";uid=" + _databaseUser + ";pwd=" + _databasePassword +
                                   ";database=" + _databaseName;
@@ -152,11 +152,11 @@ public static class DatabaseConnection
             connection.Open();
             var command = new MySqlCommand();
             command.Connection = connection;
-            command.CommandText = $@"INSERT INTO `picture` (`Id`, `DateCreated`, `Name`, `Description`, `File`, `AccountId`) VALUES (NULL, NULL, @Name, @Description, @File, @AccountId);";
+            command.CommandText = $@"INSERT INTO `picture` (`Id`, `DateCreated`, `Name`, `Description`, `File`, `AccountId`) VALUES (NULL, NOW(), @Name, @Description, @File, (SELECT Id FROM useraccount WHERE Email = @Email));";
             command.Parameters.AddWithValue("@Name", name);
             command.Parameters.AddWithValue("@Description", description);
             command.Parameters.AddWithValue("@File", filePath);
-            command.Parameters.AddWithValue("@AccountId", accountId);
+            command.Parameters.AddWithValue("@Email", email);
             command.ExecuteNonQuery();
             connection.Close();
             return true;
@@ -169,6 +169,116 @@ public static class DatabaseConnection
         }
 
         return false;
+    }
+
+    public static async Task<bool> VerifyPassword(string email, string password)
+    {
+        string connectionString = "server="+_databaseServer+";uid="+_databaseUser+";pwd="+_databasePassword+";database="+_databaseName;
+        MySqlConnection _connection = new MySqlConnection(connectionString);
+        try
+        {
+            _connection.Open();
+            MySqlCommand command = new MySqlCommand();
+            command.Connection = _connection;
+            command.CommandText = $@"SELECT EXISTS (
+    SELECT 1
+    FROM `useraccount`  -- Replace 'users' with your actual table name
+    WHERE Email = @Email  -- Placeholder for the input username
+      AND Password = @Password -- Placeholder for the HASHED input password
+) AS password_matches;";
+            command.Parameters.AddWithValue("@Email", email);
+            command.Parameters.AddWithValue("@Password", password);
+            var reader = command.ExecuteReader();
+            bool password_matches = false;
+            while (reader.Read())
+            {
+                password_matches = reader.GetBoolean("password_matches");
+            }
+            _connection.Close();
+            return password_matches;
+        }
+        catch (Exception ex)
+        {
+            _connection.Close();
+            Console.WriteLine(ex.Message);
+            //Ignore
+        }
+        return false;
+    }
+
+    public static async Task<List<string>> CheckUser(string username, string email)
+    {
+        string connectionString = "server="+_databaseServer+";uid="+_databaseUser+";pwd="+_databasePassword+";database="+_databaseName;
+        MySqlConnection _connection = new MySqlConnection(connectionString);
+        var messages = new List<string>();
+        try
+        {
+            _connection.Open();
+            MySqlCommand command = new MySqlCommand();
+            command.Connection = _connection;
+            command.CommandText = $@"SELECT * FROM useraccount WHERE Email = @Email OR Username = @Username;";
+            command.Parameters.AddWithValue("@Email", email);
+            command.Parameters.AddWithValue("@Username", username);
+            var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                var tempEmail = reader.GetString("Email");
+                var tempUsername = reader.GetString("Username");
+                if (tempEmail == email)
+                {
+                    messages.Add($"Email {tempEmail} is already in use");
+                }
+                if (tempUsername == username)
+                {
+                    messages.Add($"Username {tempUsername} is already in use");
+                }
+            }
+            _connection.Close();
+            return messages;
+        }
+        catch (Exception ex)
+        {
+            _connection.Close();
+            Console.WriteLine(ex.Message);
+            //Ignore
+        }
+
+        return messages;
+    }
+    
+    public static async Task<User?> GetUserDetails(string email)
+    {
+        string connectionString = "server="+_databaseServer+";uid="+_databaseUser+";pwd="+_databasePassword+";database="+_databaseName;
+        MySqlConnection _connection = new MySqlConnection(connectionString);
+        try
+        {
+            _connection.Open();
+            MySqlCommand command = new MySqlCommand();
+            command.Connection = _connection;
+            command.CommandText = $@"SELECT * FROM useraccount WHERE Email = @Email";
+            command.Parameters.AddWithValue("@Email", email);
+            var reader = command.ExecuteReader();
+            User? user = null;
+            while (reader.Read())
+            {
+                var tempEmail = reader.GetString("Email");
+                var tempUsername = reader.GetString("Username");
+                var tempFirstName = reader.GetString("FirstName");
+                var tempLastName = reader.GetString("LastName");
+                var tempDateOfBirth = reader.GetDateTime("DateOfBirth");
+                user = new User(tempUsername, "", tempDateOfBirth, tempEmail, tempFirstName, tempLastName, [], []);
+            }
+            _connection.Close();
+            return user;
+        }
+        catch (Exception ex)
+        {
+            _connection.Close();
+            Console.WriteLine(ex.Message);
+            //Ignore
+        }
+
+        return null;
     }
 
 

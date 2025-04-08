@@ -33,28 +33,61 @@ app.MapGet("/picturesfromaccount/{accountId}/{page}/{size}", async (HttpRequest 
 
 app.MapPost("/createuser", async (HttpRequest request) =>
 {
-    var test = await request.ReadFromJsonAsync<User>();
-    if (!MailAddress.TryCreate(test.Email, out MailAddress mailAddress)) return "Invalid mail address";
-    if (test.Password.Length != 60) return "Invalid password";
-    var result = await DatabaseConnection.CreateUser(test.Username, test.Password, test.DateOfBirth, test.Email, test.FirstName, test.LastName);
+    var user = await request.ReadFromJsonAsync<User>();
+    if (!MailAddress.TryCreate(user.Email, out MailAddress mailAddress)) return "Invalid mail address";
+    if (user.Password.Length != 60) return "Invalid password";
+    var result = await DatabaseConnection.CreateUser(user.Username, user.Password, user.DateOfBirth, user.Email, user.FirstName, user.LastName);
     return result;
 })
     .WithName("CreateUser");
 
 app.MapPost("/uploadpicture", async Task<Results<Ok<string>, BadRequest<string>>>
-    ([FromForm] FormFile fileUploadForm, HttpContext context) =>
+    (HttpRequest request) =>
 {
-    var name = fileUploadForm.FileName;
-    var description = fileUploadForm.FileName;
-    var accountId = "1";
-    if (fileUploadForm == null) return TypedResults.BadRequest("Please provide a file");
-    if (string.IsNullOrEmpty(fileUploadForm.FileName)) return TypedResults.BadRequest("Please provide a file name");
-    var filePath = await Utils.UploadFile(fileUploadForm, accountId);
-    var success = await DatabaseConnection.CreatePicture(name, description, filePath, accountId);
-    if (success) return TypedResults.Ok($"Uploaded file {fileUploadForm.FileName} successfully");
+    if (!request.HasFormContentType) return TypedResults.BadRequest("Invalid request");
+    var form = await request.ReadFormAsync();
+    if (form.Files.Count != 1) return TypedResults.BadRequest("Invalid request");
+    var file = form.Files[0];
+    var name = file.FileName;
+    var description = file.FileName;
+    var email = "";
+    if (file == null) return TypedResults.BadRequest("Please provide a file");
+    if (string.IsNullOrEmpty(file.FileName)) return TypedResults.BadRequest("Please provide a file name");
+    var filePath = await Utils.UploadFile(file, email);
+    var success = await DatabaseConnection.CreatePicture(name, description, filePath, email);
+    if (success) return TypedResults.Ok($"Uploaded file {file.FileName} successfully");
     return TypedResults.BadRequest("Failed to add picture to database");
 })
     .WithName("UploadPicture");
+
+app.MapPost("/verifypassword", async Task<Results<Ok<string>, BadRequest<string>>> (HttpRequest request) =>
+{
+    var user = await request.ReadFromJsonAsync<User>();
+    if (user == null) return TypedResults.BadRequest("Invalid request");
+    var correct = await DatabaseConnection.VerifyPassword(user.Username, user.Password);
+    if (correct) return TypedResults.Ok("Password verified");
+    return TypedResults.BadRequest("Invalid password");
+})
+    .WithName("VerifyPassword");
+
+app.MapPost("/checkuser", async Task<Results<Ok<List<string>>, BadRequest<string>>> (HttpRequest request) =>
+{
+    var user = await request.ReadFromJsonAsync<User>();
+    if (user == null) return TypedResults.BadRequest("Invalid request");
+
+    var result = await DatabaseConnection.CheckUser(user.Username, user.Email);
+    return TypedResults.Ok(result);
+})
+    .WithName("CheckUser");
+
+app.MapGet("/userdetails", async (HttpRequest request) =>
+{
+    var user = await request.ReadFromJsonAsync<User>();
+    if (user == null) return null;
+    var result = await DatabaseConnection.GetUserDetails(user.Email);
+    return result;
+})
+    .WithName("GetUserDetails");
 
 app.Run();
 

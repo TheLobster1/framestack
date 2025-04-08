@@ -71,15 +71,17 @@ public static class RestService
         return "Something went wrong";
     }
 //TODO: TEST THIS!!!
-    public static async Task<string> UploadPicture(FileResult fileResult, string accountId, List<Tag> tags)
+    public static async Task<string> UploadPicture(FileResult fileResult, User user, List<Tag> tags)
     {
-        var result = "";
         Uri restUri = new Uri(_restUrl);
-        Uri uri = new Uri(restUri, "/createuser");
+        Uri uri = new Uri(restUri, "/uploadpicture");
         var stream = await fileResult.OpenReadAsync();
         // FormFile file = new FormFile(stream, 0, stream.Length, fileResult.FileName, fileResult.FileName);
         var content = new MultipartFormDataContent();
         content.Add(new StreamContent(stream), "file", fileResult.FileName);
+        string json = JsonSerializer.Serialize(user, _serializerOptions);
+        HttpContent jsonContent = new StringContent(json, Encoding.UTF8, "application/json");
+        content.Add(jsonContent);
         try
         {
             HttpResponseMessage response = await _client.PostAsync(uri, content);
@@ -93,5 +95,72 @@ public static class RestService
             Debug.WriteLine(ex.Message);
         }
         return "Something went wrong";
+    }
+
+    public static async Task<bool> VerifyPassword(User user)
+    {
+        Uri restUri = new Uri(_restUrl);
+        Uri uri = new Uri(restUri, "/verifypassword");
+        string json = JsonSerializer.Serialize<User>(user, _serializerOptions);
+        HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+        try
+        {
+            HttpResponseMessage response = await _client.PostAsync(uri, content);
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+        }
+
+        return false;
+    }
+
+    public static async Task<List<string>> CheckUser(User user)
+    {
+        var result = new List<string>();
+        Uri restUri = new Uri(_restUrl);
+        Uri uri = new Uri(restUri, "/checkuser");
+        string json = JsonSerializer.Serialize<User>(user, _serializerOptions);
+        HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+        try
+        {
+            HttpResponseMessage response = await _client.PostAsync(uri, content);
+            if (response.IsSuccessStatusCode)
+            {
+                var messageContent = await response.Content.ReadAsStringAsync();
+                
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+        }
+        return result;
+    }
+
+    public static async Task<User> GetUserDetails(User user)
+    {
+        Uri restUri = new Uri(_restUrl);
+        Uri uri = new Uri(restUri, "/userdetails");
+        string json = JsonSerializer.Serialize(user, _serializerOptions);
+        HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+        try
+        {
+            HttpResponseMessage response = await _client.GetAsync(uri);
+            if (response.IsSuccessStatusCode)
+            {
+                var messageContent = await response.Content.ReadAsStringAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+        }
+
+        return user;
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace framestack.Models
 {
-    public class Account
+    public abstract class Account
     {
         [JsonPropertyName("pictureList")]
         private List<Picture> pictureList;
