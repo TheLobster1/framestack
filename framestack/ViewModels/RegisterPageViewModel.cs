@@ -75,7 +75,22 @@ namespace framestack.ViewModels
 
         partial void OnPasswordChanged(string value)
         {
-            
+            if (value.Length is < 8 or > 72)
+            {
+                allowedPassword = false;
+                return;
+            }
+            allowedPassword = true;
+        }
+
+        partial void OnDateOfBirthChanged(DateTime value)
+        {
+            if (value > DateTime.Today - TimeSpan.FromDays(5840))
+            {
+                allowedDateOfBirth = false;
+                return;
+            }
+            allowedDateOfBirth = true;
         }
 
         [RelayCommand]

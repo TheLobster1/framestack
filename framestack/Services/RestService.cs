@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using framestack.Models;
@@ -131,8 +132,8 @@ public static class RestService
             HttpResponseMessage response = await _client.PostAsync(uri, content);
             if (response.IsSuccessStatusCode)
             {
-                var messageContent = await response.Content.ReadAsStringAsync();
-                
+                var messageContent = await response.Content.ReadFromJsonAsync<List<string>>();
+                result = messageContent;
             }
         }
         catch (Exception ex)
@@ -153,7 +154,8 @@ public static class RestService
             HttpResponseMessage response = await _client.GetAsync(uri);
             if (response.IsSuccessStatusCode)
             {
-                var messageContent = await response.Content.ReadAsStringAsync();
+                var messageContent = await response.Content.ReadFromJsonAsync<User>();
+                if (messageContent != null) user = messageContent;
             }
         }
         catch (Exception ex)
