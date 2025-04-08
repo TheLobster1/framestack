@@ -22,7 +22,7 @@ namespace framestack.Models
         [JsonPropertyName("dateOfBirth")]
         public DateTime dateOfBirth { get; set; }
 
-        public User(string userName, string passWord, string firstName, string lastName, string eMail, DateTime dateOfBirth, List<Album> albums) : base(albums)
+        public User(string userName, string passWord, string firstName, string lastName, string eMail, DateTime dateOfBirth)
         {
             this.userName = userName;
             this.passWord = passWord;

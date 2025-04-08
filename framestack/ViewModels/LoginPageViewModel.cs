@@ -22,10 +22,10 @@ namespace framestack.ViewModels
         }
 
         [RelayCommand]
-        private async Task LoginCommand()
+        private async Task Login()
         {
             if (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(Password)) return;
-            var tempUser = new User(Username, Password, "", "", "", DateTime.Now, []);
+            var tempUser = new User(Username, Password, "", "", "", DateTime.Now);
             tempUser.setPassword(Password);
             var success = await RestService.VerifyPassword(tempUser);
             if (!success) return; //TODO: show message on screen.

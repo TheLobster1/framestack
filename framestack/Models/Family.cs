@@ -14,7 +14,7 @@ namespace framestack.Models
         [JsonPropertyName("members")]
         public List<User> members { get; set; }
 
-        public Family(string name, List<User> members, DateTime dateOfBirth, List<Album> albums) : base(albums)
+        public Family(string name, List<User> members, DateTime dateOfBirth)
         {
             this.name = name;
             this.members = members;

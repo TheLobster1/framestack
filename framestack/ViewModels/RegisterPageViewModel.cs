@@ -38,28 +38,93 @@ namespace framestack.ViewModels
         public string errorMessage;
 
         private CancellationTokenSource UsernameDatabaseCheckToken = new CancellationTokenSource();
-        private CancellationTokenSource EmailDatabaseCheckToken = new CancellationTokenSource();
-
         public RegisterPageViewModel()
+        {
+        }
+
+        partial void OnEmailChanged(string value)
+        {
+            //TODO: CHECK EMAIL
+            CheckUsernameWithDelay();
+        }
+
+        partial void OnUsernameChanged(string value)
+        {
+            CheckUsernameWithDelay();
+        }
+
+        partial void OnFirstnameChanged(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                allowedFirstname = false;
+                return;
+            }
+            allowedFirstname = true;
+        }
+
+        partial void OnLastnameChanged(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                allowedLastname = false;
+                return;
+            }
+            allowedLastname = true;
+        }
+
+        partial void OnPasswordChanged(string value)
         {
             
         }
-        
+
         [RelayCommand]
         private async Task Register()
         {
-            //TODO: Register user using the RestService
+            ErrorMessage = "";
+            if (!allowedUsername || !allowedFirstname || !allowedLastname || !allowedEmail || !allowedPassword ||
+                !allowedDateOfBirth) return;
+            var tempUser = new User(Username, Password, Firstname, Lastname, Email, DateOfBirth);
+            tempUser.setPassword(Password);
+            var result =
+                await RestService.CheckUser(tempUser); //Checks if username and email have been used before.
+            if (result.Count > 0)
+            {
+                foreach (var message in result)
+                {
+                    ErrorMessage += $"{message}\n";
+                }
+
+                return;
+            }
+
+            await RestService.CreateUser(tempUser);
         }
 
-        private async Task CheckUsernameWithDelay(User user)
+        private async Task CheckUsernameWithDelay()
         {
+            var user = new User(Username, "", "", "", Email, DateOfBirth);
             UsernameDatabaseCheckToken.Cancel();
             UsernameDatabaseCheckToken = new CancellationTokenSource();
             await Task.Delay(1000, UsernameDatabaseCheckToken.Token);
             //TODO: Check database for value
-            RestService.CheckUser(user);
-            var toast = Toast.Make(Username);
-            toast.Show();
+            var result = await RestService.CheckUser(user);
+            ErrorMessage = "";
+            allowedUsername = true;
+            allowedEmail = true;
+            if (result.Count > 0)
+            {
+                foreach (var message in result)
+                {
+                    if (message.Contains("Username")) allowedUsername = false;
+                    if (message.Contains("Email")) allowedEmail = false;
+                    ErrorMessage += $"{message}\n";
+                }
+
+                return;
+            }
+
+            
         }
     }
 }

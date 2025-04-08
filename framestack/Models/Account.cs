@@ -14,14 +14,15 @@ namespace framestack.Models
         [JsonPropertyName("albums")]
         private List<Album> albums;
 
-        public Account(List<Album> albums)
+        public Account()
         {
-            this.pictureList = new List<Picture>();
-            this.albums = albums;
+            this.pictureList = [];
+            this.albums = [];
         }
 
         public void createPicture(Picture picture)
         {
+            //TODO: add picture to db
             this.pictureList.Add(picture);
         }
  
