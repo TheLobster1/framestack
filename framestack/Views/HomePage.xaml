@@ -9,7 +9,7 @@
     <FlexLayout
             Direction="Column"
             >
-        <FlexLayout Direction="Row">
+        <FlexLayout Direction="Row" JustifyContent="SpaceBetween">
             <Label
                 Margin="10"
                 Text="Frame Stack"
@@ -17,6 +17,12 @@
                 FontSize="32"
                 FontAutoScalingEnabled="True"
                 LineBreakMode="WordWrap"/>
+            <Button
+                Margin="10"
+                CornerRadius="50"
+                Text="+"
+                Command="{Binding AddPictureCommand}"
+            />
         </FlexLayout>
         <CollectionView ItemsSource="{Binding Pictures}">
             <CollectionView.ItemTemplate>

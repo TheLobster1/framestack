@@ -1,4 +1,5 @@
 using System.Net.Mail;
+using System.Text.Json;
 using framestackAPI;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -51,11 +52,21 @@ app.MapPost("/uploadpicture", async Task<Results<Ok<string>, BadRequest<string>>
     var file = form.Files[0];
     var name = file.FileName;
     var description = file.FileName;
-    var email = "";
+    if (!form.TryGetValue("user", out var userValues) || userValues.Count == 0 || string.IsNullOrEmpty(userValues[0]))
+    {
+        return TypedResults.BadRequest("Required 'user' data field is missing or empty.");
+    }
+    var userJson = userValues[0];
+    
+    var user = JsonSerializer.Deserialize<User>(userJson, new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        WriteIndented = true
+    });
     if (file == null) return TypedResults.BadRequest("Please provide a file");
     if (string.IsNullOrEmpty(file.FileName)) return TypedResults.BadRequest("Please provide a file name");
-    var filePath = await Utils.UploadFile(file, email);
-    var success = await DatabaseConnection.CreatePicture(name, description, filePath, email);
+    var filePath = await Utils.UploadFile(file, user.Email);
+    var success = await DatabaseConnection.CreatePicture(name, description, filePath, user.Email);
     if (success) return TypedResults.Ok($"Uploaded file {file.FileName} successfully");
     return TypedResults.BadRequest("Failed to add picture to database");
 })
@@ -93,7 +104,7 @@ app.MapPost("/userdetails", async (HttpRequest request) =>
 
 app.Run();
 
-public record Picture(string Url, string? Title, string? Description, int Id, DateTime DateCreated, int AccountId, List<Tag>? Tags);
+public record Picture(string FilePath, string? Name, string? Description, int Id, DateTime DateCreated, int AccountId, List<Tag>? Tags);
 public record User(string Username, string Password, DateTime DateOfBirth, string Email, string FirstName, string LastName, List<Picture>? PictureList, List<Album>? Albums);
 public record Album(string Name, string? Description, List<Picture>? PictureList);
 public record Tag(string Name);

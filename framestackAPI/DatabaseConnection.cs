@@ -97,7 +97,7 @@ public static class DatabaseConnection
                                     LEFT JOIN
                                         tag t ON ptc.TagId = t.ID
                                     WHERE
-                                        p.AccountId = (SELECT accountId FROM useraccount WHERE Email = @Email)
+                                        p.AccountId = (SELECT Id FROM useraccount WHERE Email = @Email)
                                     GROUP BY
                                         p.Id,  -- Group by all picture columns to get one row per picture
                                         p.Name,
@@ -118,7 +118,15 @@ public static class DatabaseConnection
                 var DateCreated = reader.GetDateTime("PictureCreationDate");
                 var File = reader.GetString("PictureFilePath");
                 var AccountId = reader.GetInt32("AccountId");
-                var Tags = reader.GetString("Tags");
+                string Tags = "";
+                try
+                {
+                    Tags = reader.GetString("Tags");
+                }
+                catch (Exception ex)
+                {
+                    //IGNORE
+                }
                 var TagList = new List<Tag>();
                 if (!string.IsNullOrEmpty(Tags))
                 {
@@ -153,11 +161,23 @@ public static class DatabaseConnection
             connection.Open();
             var command = new MySqlCommand();
             command.Connection = connection;
-            command.CommandText = $@"INSERT INTO `picture` (`Id`, `DateCreated`, `Name`, `Description`, `File`, `AccountId`) VALUES (NULL, NOW(), @Name, @Description, @File, (SELECT Id FROM useraccount WHERE Email = @Email));";
+            command.CommandText = $@"SELECT Id FROM useraccount WHERE Email = @Email";
+            command.Parameters.AddWithValue("@Email", email);
+            var reader = command.ExecuteReader();
+            int Id = -1;
+            while (reader.Read())
+            {
+                Id = reader.GetInt32("Id");
+            }
+            reader.Close();
+            if (Id == -1) return false;
+            command = new MySqlCommand();
+            command.Connection = connection;
+            command.CommandText = $@"INSERT INTO `picture` (`Id`, `DateCreated`, `Name`, `Description`, `File`, `AccountId`) VALUES (NULL, NOW(), @Name, @Description, @File, @Id);";
             command.Parameters.AddWithValue("@Name", name);
             command.Parameters.AddWithValue("@Description", description);
             command.Parameters.AddWithValue("@File", filePath);
-            command.Parameters.AddWithValue("@Email", email);
+            command.Parameters.AddWithValue("@Id", Id);
             command.ExecuteNonQuery();
             connection.Close();
             return true;
@@ -257,7 +277,14 @@ public static class DatabaseConnection
             _connection.Open();
             MySqlCommand command = new MySqlCommand();
             command.Connection = _connection;
-            command.CommandText = $@"SELECT * FROM useraccount WHERE Email = @Email";
+            if (MailAddress.TryCreate(email, out MailAddress mail))
+            {
+                command.CommandText = $@"SELECT * FROM useraccount WHERE Email = @Email";
+            }
+            else
+            {
+                command.CommandText = $@"SELECT * FROM useraccount WHERE UserName = @Email";
+            }
             command.Parameters.AddWithValue("@Email", email);
             var reader = command.ExecuteReader();
             User? user = null;

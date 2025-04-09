@@ -77,12 +77,11 @@ public static class RestService
         Uri restUri = new Uri(_restUrl);
         Uri uri = new Uri(restUri, "/uploadpicture");
         var stream = await fileResult.OpenReadAsync();
-        // FormFile file = new FormFile(stream, 0, stream.Length, fileResult.FileName, fileResult.FileName);
         var content = new MultipartFormDataContent();
         content.Add(new StreamContent(stream), "file", fileResult.FileName);
         string json = JsonSerializer.Serialize(user, _serializerOptions);
         HttpContent jsonContent = new StringContent(json, Encoding.UTF8, "application/json");
-        content.Add(jsonContent);
+        content.Add(jsonContent, "user");
         try
         {
             HttpResponseMessage response = await _client.PostAsync(uri, content);
