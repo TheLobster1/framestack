@@ -36,10 +36,13 @@ namespace framestack.ViewModels
         public DateTime dateOfBirth;
         [ObservableProperty]
         public string errorMessage;
+        
+        private readonly LocalUserStorage localUserStorage;
 
         private CancellationTokenSource UsernameDatabaseCheckToken = new CancellationTokenSource();
         public RegisterPageViewModel()
         {
+            localUserStorage = Application.Current.Windows[0].Page.Handler.MauiContext.Services.GetService<LocalUserStorage>();
         }
 
         partial void OnEmailChanged(string value)
@@ -114,6 +117,8 @@ namespace framestack.ViewModels
             }
 
             await RestService.CreateUser(tempUser);
+            await Application.Current.MainPage.Navigation.PushAsync(new LoginPage(new LoginPageViewModel()));
+
         }
 
         private async Task CheckUsernameWithDelay()

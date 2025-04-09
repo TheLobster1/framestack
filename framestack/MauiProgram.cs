@@ -24,8 +24,7 @@ namespace framestack
                 .Services
                 .AddViewModels()
                 .AddViews()
-                .AddServices()
-                .AddSingleton<DatabaseConnectionService>();
+                .AddServices();
 
 #if DEBUG
             builder.Logging.AddDebug();

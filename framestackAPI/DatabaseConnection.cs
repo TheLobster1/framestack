@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using System.Net.Mail;
+using MySql.Data.MySqlClient;
 
 namespace framestackAPI;
 
@@ -67,7 +68,7 @@ public static class DatabaseConnection
         return "???";
     }
     
-    public static async Task<List<Picture>> GetPicturesFromAccount(int accountId, int page = 0, int size = 20)
+    public static async Task<List<Picture>> GetPicturesFromAccount(string email, int page = 0, int size = 20)
     {
         string connectionString = "server="+_databaseServer+";uid="+_databaseUser+";pwd="+_databasePassword+";database="+_databaseName;
         MySqlConnection _connection = new MySqlConnection(connectionString);
@@ -96,7 +97,7 @@ public static class DatabaseConnection
                                     LEFT JOIN
                                         tag t ON ptc.TagId = t.ID
                                     WHERE
-                                        p.AccountId = @AccountId -- <-- Replace :userId with the actual user account ID
+                                        p.AccountId = (SELECT accountId FROM useraccount WHERE Email = @Email)
                                     GROUP BY
                                         p.Id,  -- Group by all picture columns to get one row per picture
                                         p.Name,
@@ -107,7 +108,7 @@ public static class DatabaseConnection
                                     ORDER BY
                                         p.DateCreated DESC LIMIT {size} OFFSET {page * size}; -- Optional: order pictures, e.g., by creation date
                                     ";
-            command.Parameters.AddWithValue("@AccountId", accountId);
+            command.Parameters.AddWithValue("@Email", email);
             var reader = command.ExecuteReader();
             while (reader.Read())
             {
@@ -171,7 +172,7 @@ public static class DatabaseConnection
         return false;
     }
 
-    public static async Task<bool> VerifyPassword(string email, string password)
+    public static async Task<string> GetPasswordHash(string email)
     {
         string connectionString = "server="+_databaseServer+";uid="+_databaseUser+";pwd="+_databasePassword+";database="+_databaseName;
         MySqlConnection _connection = new MySqlConnection(connectionString);
@@ -180,22 +181,23 @@ public static class DatabaseConnection
             _connection.Open();
             MySqlCommand command = new MySqlCommand();
             command.Connection = _connection;
-            command.CommandText = $@"SELECT EXISTS (
-    SELECT 1
-    FROM `useraccount`  -- Replace 'users' with your actual table name
-    WHERE Email = @Email  -- Placeholder for the input username
-      AND Password = @Password -- Placeholder for the HASHED input password
-) AS password_matches;";
-            command.Parameters.AddWithValue("@Email", email);
-            command.Parameters.AddWithValue("@Password", password);
+            if (MailAddress.TryCreate(email, out MailAddress mail))
+            {
+                command.CommandText = $@"SELECT Password FROM useraccount WHERE Email = @Email;";
+            }
+            else
+            {
+                command.CommandText = $@"SELECT Password FROM useraccount WHERE UserName = @Email;";
+            }
+            
+            command.Parameters.AddWithValue("@Email", email); 
             var reader = command.ExecuteReader();
-            bool password_matches = false;
+            var passwordHash = "";
             while (reader.Read())
             {
-                password_matches = reader.GetBoolean("password_matches");
-            }
+                passwordHash = reader.GetString("Password");            }
             _connection.Close();
-            return password_matches;
+            return passwordHash;
         }
         catch (Exception ex)
         {
@@ -203,7 +205,7 @@ public static class DatabaseConnection
             Console.WriteLine(ex.Message);
             //Ignore
         }
-        return false;
+        return "";
     }
 
     public static async Task<List<string>> CheckUser(string username, string email)

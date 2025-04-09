@@ -11,10 +11,8 @@ namespace framestack.Services
     {
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            services.AddTransient<DatabaseConnectionService>();
-            services.AddTransient<PictureUploadService>();
-            // services.AddTransient<RestService>();
-
+            // services.AddTransient<LocalUserStorage>();
+            services.AddSingleton<LocalUserStorage>();
             return services;
         }
     }

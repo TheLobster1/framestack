@@ -6,7 +6,7 @@ Accept: application/json
 GET {{framestackAPI_HostAddress}}/users/
 Accept: application/json
 ###
-GET {{framestackAPI_HostAddress}}/userdetails/
+POST {{framestackAPI_HostAddress}}/userdetails/
 Accept: application/json
 ###
 POST {{framestackAPI_HostAddress}}/checkpassword/

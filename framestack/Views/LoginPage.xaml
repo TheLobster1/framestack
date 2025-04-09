@@ -50,7 +50,7 @@
                 <Button
                     Margin="10"
                     Padding="10"
-                    CornerRadius="100"
+                    CornerRadius="30"
                     FontSize="20"
                     Command="{Binding LoginCommand}"
                     Text="Login"/>

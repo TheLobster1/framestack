@@ -23,11 +23,11 @@ public static class RestService
         };
     }
 
-    public static async Task<List<Picture>> GetPictures(int accountId, int page = 0, int pageSize = 20)
+    public static async Task<List<Picture>> GetPictures(string email, int page = 0, int pageSize = 20)
     {
         var result = new List<Picture>();
         Uri restUri = new Uri(_restUrl);
-        Uri uri = new Uri(restUri, "/picturesfromaccount/" + accountId.ToString() + "/" + page.ToString() + "/" + pageSize.ToString());
+        Uri uri = new Uri(restUri, "/picturesfromaccount/" + email + "/" + page + "/" + pageSize);
         try
         {
             HttpResponseMessage response = await _client.GetAsync(uri);
@@ -101,7 +101,7 @@ public static class RestService
     public static async Task<bool> VerifyPassword(User user)
     {
         Uri restUri = new Uri(_restUrl);
-        Uri uri = new Uri(restUri, "/verifypassword");
+        Uri uri = new Uri(restUri, "/checkpassword");
         string json = JsonSerializer.Serialize<User>(user, _serializerOptions);
         HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
         try
@@ -151,7 +151,7 @@ public static class RestService
         HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
         try
         {
-            HttpResponseMessage response = await _client.GetAsync(uri);
+            HttpResponseMessage response = await _client.PostAsync(uri, content);
             if (response.IsSuccessStatusCode)
             {
                 var messageContent = await response.Content.ReadFromJsonAsync<User>();

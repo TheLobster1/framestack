@@ -3,6 +3,7 @@ using framestackAPI;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Crypto.Generators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,13 +21,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/picturesfromaccount/{accountId}/{page}/{size}", async (HttpRequest request) =>
+app.MapGet("/picturesfromaccount/{email}/{page}/{size}", async (HttpRequest request) =>
 {
     var pictures = new List<Picture>();
-    if (!int.TryParse(request.RouteValues["accountId"].ToString(), out int id)) return pictures;
+    if (!MailAddress.TryCreate(request.RouteValues["email"].ToString(), out MailAddress mailAddress)) return pictures;
     if (!int.TryParse(request.RouteValues["page"].ToString(), out int page)) return pictures;
     if (!int.TryParse(request.RouteValues["size"].ToString(), out int size)) return pictures;
-    var result = await DatabaseConnection.GetPicturesFromAccount(id, page, size);
+    var result = await DatabaseConnection.GetPicturesFromAccount(mailAddress.Address, page, size);
     return result;
 })
     .WithName("GetPictures");
@@ -60,11 +61,12 @@ app.MapPost("/uploadpicture", async Task<Results<Ok<string>, BadRequest<string>>
 })
     .WithName("UploadPicture");
 
-app.MapPost("/verifypassword", async Task<Results<Ok<string>, BadRequest<string>>> (HttpRequest request) =>
+app.MapPost("/checkpassword", async Task<Results<Ok<string>, BadRequest<string>>> (HttpRequest request) =>
 {
     var user = await request.ReadFromJsonAsync<User>();
     if (user == null) return TypedResults.BadRequest("Invalid request");
-    var correct = await DatabaseConnection.VerifyPassword(user.Username, user.Password);
+    var hash = await DatabaseConnection.GetPasswordHash(user.Email);
+    var correct = BCrypt.Net.BCrypt.EnhancedVerify(user.Password, hash);
     if (correct) return TypedResults.Ok("Password verified");
     return TypedResults.BadRequest("Invalid password");
 })
@@ -80,7 +82,7 @@ app.MapPost("/checkuser", async Task<Results<Ok<List<string>>, BadRequest<string
 })
     .WithName("CheckUser");
 
-app.MapGet("/userdetails", async (HttpRequest request) =>
+app.MapPost("/userdetails", async (HttpRequest request) =>
 {
     var user = await request.ReadFromJsonAsync<User>();
     if (user == null) return null;

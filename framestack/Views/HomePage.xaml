@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="framestack.Views.HomePage"
+             xmlns:viewmodel="clr-namespace:framestack.ViewModels"
+             xmlns:model="clr-namespace:framestack.Models"
+             x:DataType="viewmodel:HomePageViewModel">
+    <FlexLayout
+            Direction="Column"
+            >
+        <FlexLayout Direction="Row">
+            <Label
+                Margin="10"
+                Text="Frame Stack"
+                FontAttributes="Bold"
+                FontSize="32"
+                FontAutoScalingEnabled="True"
+                LineBreakMode="WordWrap"/>
+        </FlexLayout>
+        <CollectionView ItemsSource="{Binding Pictures}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:Picture">
+                    <Grid Padding="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Image Grid.RowSpan="2"
+                               Source="{Binding FilePath}"
+                               Aspect="AspectFill"
+                               HeightRequest="60"
+                               WidthRequest="60"/>
+                        <Label Grid.Row="2"
+                               Text="{Binding Name}"
+                               FontAttributes="Bold" />
+                        <Label Grid.Row="3"
+                               Text="{Binding DateCreated}"
+                               FontAttributes="Italic"
+                               VerticalOptions="End" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </FlexLayout>
+        
+</ContentPage>
