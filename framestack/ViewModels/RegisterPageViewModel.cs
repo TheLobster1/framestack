@@ -127,7 +127,6 @@ namespace framestack.ViewModels
             UsernameDatabaseCheckToken.Cancel();
             UsernameDatabaseCheckToken = new CancellationTokenSource();
             await Task.Delay(1000, UsernameDatabaseCheckToken.Token);
-            //TODO: Check database for value
             var result = await RestService.CheckUser(user);
             ErrorMessage = "";
             allowedUsername = true;
@@ -140,11 +139,7 @@ namespace framestack.ViewModels
                     if (message.Contains("Email")) allowedEmail = false;
                     ErrorMessage += $"{message}\n";
                 }
-
-                return;
             }
-
-            
         }
     }
 }

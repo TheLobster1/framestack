@@ -6,9 +6,11 @@
              xmlns:viewmodel="clr-namespace:framestack.ViewModels"
              xmlns:model="clr-namespace:framestack.Models"
              x:DataType="viewmodel:HomePageViewModel">
-    <FlexLayout
-            Direction="Column"
-            >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="9*"/>
+        </Grid.RowDefinitions>
         <FlexLayout Direction="Row" JustifyContent="SpaceBetween">
             <Label
                 Margin="10"
@@ -24,7 +26,8 @@
                 Command="{Binding AddPictureCommand}"
             />
         </FlexLayout>
-        <CollectionView ItemsSource="{Binding Pictures}">
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Pictures}"
+                        ItemsLayout="VerticalGrid, 2">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:Picture">
                     <Grid Padding="10">
@@ -50,6 +53,6 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </FlexLayout>
+    </Grid>
         
 </ContentPage>
