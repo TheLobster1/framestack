@@ -9,7 +9,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="9*"/>
+            <RowDefinition Height="8*"/>
         </Grid.RowDefinitions>
         <FlexLayout Direction="Row" JustifyContent="SpaceBetween">
             <Label
@@ -27,29 +27,43 @@
             />
         </FlexLayout>
         <CollectionView Grid.Row="1" ItemsSource="{Binding Pictures}"
-                        ItemsLayout="VerticalGrid, 2">
+                        Scrolled="{Binding CollectionViewScrolledCommand}">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout
+                    Orientation="Vertical"
+                    Span="2"
+                    VerticalItemSpacing="20"
+                    HorizontalItemSpacing="20"/>
+            </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:Picture">
-                    <Grid Padding="10">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <Image Grid.RowSpan="2"
-                               Source="{Binding FilePath}"
-                               Aspect="AspectFill"
-                               HeightRequest="60"
-                               WidthRequest="60"/>
-                        <Label Grid.Row="2"
-                               Text="{Binding Name}"
-                               FontAttributes="Bold" />
-                        <Label Grid.Row="3"
-                               Text="{Binding DateCreated}"
-                               FontAttributes="Italic"
-                               VerticalOptions="End" />
-                    </Grid>
+                    <Border
+                        BackgroundColor="#D9D9D9"
+                        StrokeShape="RoundRectangle 20"
+                        StrokeThickness="0"
+                        Padding="10"
+                        Margin="10">
+                        <Grid Padding="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="7*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Image Grid.RowSpan="4"
+                                   Source="{Binding FilePath}"
+                                   Aspect="AspectFit"
+                                   />
+                            <Label Grid.Row="2"
+                                   BackgroundColor="#50000000"
+                                   Text="{Binding Name}"
+                                   FontAttributes="Bold" />
+                            <Label Grid.Row="3"
+                                   Text="{Binding DateCreated}"
+                                   FontAttributes="Italic"
+                                   VerticalOptions="End" />
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

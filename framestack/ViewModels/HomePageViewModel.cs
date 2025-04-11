@@ -2,17 +2,15 @@
 using CommunityToolkit.Mvvm.Input;
 using framestack.Models;
 using framestack.Services;
+using LiveChartsCore.Behaviours.Events;
 
 namespace framestack.ViewModels;
 
 public partial class HomePageViewModel : ViewModel
 {
     [ObservableProperty]
-    public string username;
-
-    [ObservableProperty]
     public List<Picture> pictures;
-    
+    [ObservableProperty]
     private readonly LocalUserStorage localUserStorage;
 
     public HomePageViewModel()
@@ -43,6 +41,11 @@ public partial class HomePageViewModel : ViewModel
         {
             UploadPicture(picture);
         }
+    }
+    [RelayCommand]
+    public async Task CollectionViewScrolled()
+    {
+        
     }
 
     private async Task UploadPicture(FileResult picture)
