@@ -26,8 +26,7 @@
                 Command="{Binding AddPictureCommand}"
             />
         </FlexLayout>
-        <CollectionView Grid.Row="1" ItemsSource="{Binding Pictures}"
-                        Scrolled="{Binding CollectionViewScrolledCommand}">
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Pictures}">
             <CollectionView.ItemsLayout>
                 <GridItemsLayout
                     Orientation="Vertical"
