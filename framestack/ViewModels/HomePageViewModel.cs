@@ -30,7 +30,7 @@ public partial class HomePageViewModel : ViewModel
         {
             //Something happened.
         }
-        GetAllPictures();
+        GetPictures();
     }
 
     private async Task GetPictures()
@@ -49,15 +49,32 @@ public partial class HomePageViewModel : ViewModel
             UploadPicture(picture);
         }
     }
+    
     [RelayCommand]
-    public async Task CollectionViewScrolled()
+    public async Task AddPictures()
     {
-        
+        var files = await FilePicker.PickMultipleAsync(PickOptions.Images);
+        if (files == null) return; //TODO: tell user nothing was selected
+        if (!files.Any()) return;
+        UploadPictures(files.ToList());
     }
+    // [RelayCommand]
+    // public async Task CollectionViewScrolled()
+    // {
+    //     
+    // }
 
     private async Task UploadPicture(FileResult picture)
     {
-        await RestService.UploadPicture(picture, localUserStorage.User, []);
+        await RestService.UploadPicture(picture, LocalUserStorage.User, []);    //TODO: Allow user to add tags
+        GetAllPictures();
+    }
+
+    private async Task UploadPictures(List<FileResult> files)
+    {
+        if (files == null) return;
+        if (!files.Any()) return;
+        await RestService.UploadPictures(files, LocalUserStorage.User);
         GetAllPictures();
     }
 
@@ -73,19 +90,16 @@ public partial class HomePageViewModel : ViewModel
         int amountOfPages = startPage + 10;
         for (startPage = startPage; startPage < amountOfPages; startPage++)
         {
-            tasks.Add(RestService.GetPictures(localUserStorage.User.eMail, startPage));
+            tasks.Add(RestService.GetPictures(LocalUserStorage.User.eMail, startPage));
         }
         await Task.WhenAll(tasks);
         foreach (var task in tasks)
         {
-            MainThread.BeginInvokeOnMainThread(() =>
+            foreach (var picture in task.Result)
             {
-                foreach (var picture in task.Result)
-                {
-                    Pictures.Add(picture);
-                }
-                LocalUserStorage.Pictures = task.Result;
-            });
+                Pictures.Add(picture);
+            }
+            LocalUserStorage.Pictures = task.Result;
             
             if (task.Result.Count < 20)
             {

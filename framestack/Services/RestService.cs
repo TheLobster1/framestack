@@ -97,6 +97,34 @@ public static class RestService
         return "Something went wrong";
     }
 
+    public static async Task<string> UploadPictures(List<FileResult> fileResults, User user)
+    {
+        Uri restUri = new Uri(_restUrl);
+        Uri uri = new Uri(restUri, "/uploadpictures");
+        var content = new MultipartFormDataContent();
+        foreach (var fileResult in fileResults)
+        {
+            var stream = await fileResult.OpenReadAsync();
+            content.Add(new StreamContent(stream), "file", fileResult.FileName);
+        }
+        string json = JsonSerializer.Serialize(user, _serializerOptions);
+        HttpContent jsonContent = new StringContent(json, Encoding.UTF8, "application/json");
+        content.Add(jsonContent, "user");
+        try
+        {
+            HttpResponseMessage response = await _client.PostAsync(uri, content);
+            if (response.IsSuccessStatusCode)
+            {
+                return "Success";
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+        }
+        return "Something went wrong";
+    }
+
     public static async Task<bool> VerifyPassword(User user)
     {
         Uri restUri = new Uri(_restUrl);

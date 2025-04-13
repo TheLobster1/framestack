@@ -23,7 +23,7 @@
                 Margin="10"
                 CornerRadius="50"
                 Text="+"
-                Command="{Binding AddPictureCommand}"
+                Command="{Binding AddPicturesCommand}"
             />
         </FlexLayout>
         <CollectionView Grid.Row="1" ItemsSource="{Binding Pictures}">

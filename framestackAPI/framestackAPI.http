@@ -21,6 +21,9 @@ Accept: application/json
 POST {{framestackAPI_HostAddress}}/uploadpicture/
 Accept: application/json
 ###
+POST {{framestackAPI_HostAddress}}/uploadpictures/
+Accept: application/json
+###
 POST {{framestackAPI_HostAddress}}/updatepicturedetails/
 Accept: application/json
 ###

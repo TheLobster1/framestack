@@ -66,11 +66,56 @@ app.MapPost("/uploadpicture", async Task<Results<Ok<string>, BadRequest<string>>
     if (file == null) return TypedResults.BadRequest("Please provide a file");
     if (string.IsNullOrEmpty(file.FileName)) return TypedResults.BadRequest("Please provide a file name");
     var filePath = await Utils.UploadFile(file, user.Email);
-    var success = await DatabaseConnection.CreatePicture(name, description, filePath, user.Email);
+    var success = await DatabaseConnection.CreatePicture(name, description, filePath[0], user.Email);
     if (success) return TypedResults.Ok($"Uploaded file {file.FileName} successfully");
     return TypedResults.BadRequest("Failed to add picture to database");
 })
     .WithName("UploadPicture");
+
+app.MapPost("/uploadpictures", async Task<Results<Ok<string>, BadRequest<string>>> (HttpRequest request) =>
+    {
+        if (!request.HasFormContentType) return TypedResults.BadRequest("Invalid request");
+        var form = await request.ReadFormAsync();
+        if (form.Files.Count < 1) return TypedResults.BadRequest("Invalid request");
+        if (!form.TryGetValue("user", out var userValues) || userValues.Count == 0 || string.IsNullOrEmpty(userValues[0]))
+        {
+            return TypedResults.BadRequest("Required 'user' data field is missing or empty.");
+        }
+        var userJson = userValues[0];
+        var user = JsonSerializer.Deserialize<User>(userJson, new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = true
+        });
+        List<Task<string[]>> tasks = new List<Task<string[]>>();
+        foreach (var file in form.Files)
+        {
+            if (file == null) continue;
+            if (string.IsNullOrEmpty(file.FileName)) return TypedResults.BadRequest("Please provide a file name");
+            tasks.Add(Utils.UploadFile(file, user.Email));
+        }
+        await Task.WhenAll(tasks);
+        List<Task<bool>> uploadTasks = new List<Task<bool>>();
+        foreach (var task in tasks)
+        {
+            var filePath = task.Result[0];
+            var name = task.Result[1];
+            var description = task.Result[2];
+            uploadTasks.Add(DatabaseConnection.CreatePicture(name, description, filePath, user.Email));
+        }
+        await Task.WhenAll(uploadTasks);
+        int failedUploads = 0;
+        foreach (var task in uploadTasks)
+        {
+            if (!task.Result)
+            {
+                failedUploads++;
+            }
+        }
+
+        return TypedResults.Ok($"{failedUploads} uploads failed");
+    })
+    .WithName("UploadPictures");
 
 app.MapPost("/checkpassword", async Task<Results<Ok<string>, BadRequest<string>>> (HttpRequest request) =>
 {
