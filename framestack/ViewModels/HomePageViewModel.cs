@@ -17,10 +17,10 @@ public partial class HomePageViewModel : ViewModel
 
     public HomePageViewModel()
     {
-        localUserStorage = Application.Current.Windows[0].Page.Handler.MauiContext.Services.GetService<LocalUserStorage>();
+        localUserStorage = Application.Current.Windows[0].Page.Handler.MauiContext.Services.GetService<LocalUserStorage>(); //get singleton and add to local variable
         try
         {
-            if (LocalUserStorage.Pictures == null)
+            if (LocalUserStorage.Pictures == null)  //check if pictures has been set
             {
                 LocalUserStorage.Pictures = new List<Picture>();
             }
@@ -30,7 +30,7 @@ public partial class HomePageViewModel : ViewModel
         {
             //Something happened.
         }
-        GetPictures();
+        GetPictures();  //get initial images from application
     }
 
     private async Task GetPictures()
@@ -46,7 +46,7 @@ public partial class HomePageViewModel : ViewModel
         var picture = await MediaPicker.PickPhotoAsync();
         if (picture != null)
         {
-            UploadPicture(picture);
+            UploadPicture(picture); //upload picture in separate task to let user continue doing other things (there is not much to do though)
         }
     }
     
@@ -58,11 +58,6 @@ public partial class HomePageViewModel : ViewModel
         if (!files.Any()) return;
         UploadPictures(files.ToList());
     }
-    // [RelayCommand]
-    // public async Task CollectionViewScrolled()
-    // {
-    //     
-    // }
 
     private async Task UploadPicture(FileResult picture)
     {
@@ -112,10 +107,4 @@ public partial class HomePageViewModel : ViewModel
             GetAllPictures(startPage);
         }
     }
-
-    // static async Task<List<Picture>> ThreadPictureLoad(string email, int page)
-    // {
-    //     var pictures = await RestService.GetPictures(email, page);
-    //     return pictures;
-    // }
 }

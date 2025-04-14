@@ -12,42 +12,42 @@ public static class DatabaseConnection
 
     public static async Task<string> CreateUser(string userName, string passWord, DateTime dob, string email, string firstName, string lastName)
     {
-        string connectionString = "server="+_databaseServer+";uid="+_databaseUser+";pwd="+_databasePassword+";database="+_databaseName;
+        string connectionString = "server="+_databaseServer+";uid="+_databaseUser+";pwd="+_databasePassword+";database="+_databaseName;     //database connection string with configured variables
         MySqlConnection _connection = new MySqlConnection(connectionString);
         try
         {
-            _connection.Open();
+            _connection.Open(); //open connection to database
             bool userExists = false;
             MySqlCommand command = new MySqlCommand();
             command.Connection = _connection;
-            command.CommandText = $@"SELECT COUNT(*) AS count_user FROM useraccount WHERE Email = @Email OR Username = @Username;";
-            command.Parameters.AddWithValue("@Email", email);
-            command.Parameters.AddWithValue("@Username", userName);
-            var reader = command.ExecuteReader();
-            while (reader.Read())
+            command.CommandText = $@"SELECT COUNT(*) AS count_user FROM useraccount WHERE Email = @Email OR Username = @Username;"; //get the amount of entries from the useraccount table with the email or username provided.
+            command.Parameters.AddWithValue("@Email", email);   //add value to command
+            command.Parameters.AddWithValue("@Username", userName); //add value to command
+            var reader = command.ExecuteReader();   //start the query
+            while (reader.Read())   //read the query which returns one row and one column
             {
                 var count_user = reader.GetInt32("count_user");
-                userExists = count_user != 0;
+                userExists = count_user != 0;   //if user_count is not 0 set to false, else set to true
             }
-            reader.Close();
+            reader.Close(); //close the reader
             if (userExists)
             {
-                _connection.Close();
+                _connection.Close();    //close the connection
                 return "Email already being used";
             }
-            command = new MySqlCommand();
+            command = new MySqlCommand();   //start new command
             command.Connection = _connection;
-            command.CommandText = $@"INSERT INTO `account` (`Id`, `Created`) VALUES (NULL, NOW());";
+            command.CommandText = $@"INSERT INTO `account` (`Id`, `Created`) VALUES (NULL, NOW());";    //create new account in database with auto incremented ID and creation date of now.
             command.ExecuteNonQuery();
             var accountId = command.LastInsertedId;     //COULD BE FAULTY DUE TO MULTIPLE USERS AT SAME TIME
             if (accountId == -1)
             {
-                _connection.Close();
+                _connection.Close();    //close connection if accountId for some reason turns to -1
                 return "Something went wrong";
             }
-            command = new MySqlCommand();
+            command = new MySqlCommand();   //start another new command
             command.Connection = _connection;
-            command.CommandText = $@"INSERT INTO `useraccount` (`Id`, `UserName`, `FirstName`, `LastName`, `DateOfBirth`, `Email`, `Password`) VALUES (@accountId, @Username, @Firstname, @Lastname, @BirthDate, @Email, @Password);";
+            command.CommandText = $@"INSERT INTO `useraccount` (`Id`, `UserName`, `FirstName`, `LastName`, `DateOfBirth`, `Email`, `Password`) VALUES (@accountId, @Username, @Firstname, @Lastname, @BirthDate, @Email, @Password);";  
             command.Parameters.AddWithValue("@accountId", accountId);
             command.Parameters.AddWithValue("@Username", userName);
             command.Parameters.AddWithValue("@Firstname", firstName);
@@ -55,6 +55,7 @@ public static class DatabaseConnection
             command.Parameters.AddWithValue("@BirthDate", dob);
             command.Parameters.AddWithValue("@Email", email);
             command.Parameters.AddWithValue("@Password", passWord);
+            //create new user with previously created accountId as foreign key and other values
             command.ExecuteNonQuery();
             _connection.Close();
             return $"Hi{firstName} {lastName}! The account with username {userName} has been created.";
@@ -63,7 +64,7 @@ public static class DatabaseConnection
         {
             // _connection.Close();
             Console.WriteLine(ex.Message);
-            //Ignore
+            //An SQL query did not succeed
         }
         return "???";
     }
@@ -87,8 +88,7 @@ public static class DatabaseConnection
                                         p.File AS PictureFilepath,
                                         p.DateCreated AS PictureCreationDate,
                                         p.AccountId,
-                                        -- This part concatenates the tag names. The specific function might vary
-                                        -- depending on your SQL database system (see notes below).
+                                        -- This part concatenates the tag names.
                                         GROUP_CONCAT(t.name SEPARATOR ',') AS Tags
                                     FROM
                                         picture p
@@ -106,7 +106,7 @@ public static class DatabaseConnection
                                         p.DateCreated,
                                         p.AccountId
                                     ORDER BY
-                                        p.DateCreated DESC LIMIT {size} OFFSET {page * size}; -- Optional: order pictures, e.g., by creation date
+                                        p.DateCreated DESC LIMIT {size} OFFSET {page * size}; -- order by date desc to get newest first. Limit to expected amount of items
                                     ";
             command.Parameters.AddWithValue("@Email", email);
             var reader = command.ExecuteReader();
@@ -130,14 +130,14 @@ public static class DatabaseConnection
                 var TagList = new List<Tag>();
                 if (!string.IsNullOrEmpty(Tags))
                 {
-                    var tags = Tags.Split(',');
+                    var tags = Tags.Split(','); //split tags as they were concatenated
                     foreach (var tag in tags)
                     {
                         TagList.Add(new Tag(tag));
                     }
                 }
                 Picture picture = new(File, Name, Description, Id, DateCreated, AccountId, TagList);
-                pictures.Add(picture);
+                pictures.Add(picture); //add picture to the list of pictures
             }
             _connection.Close();
             return pictures;
@@ -146,9 +146,9 @@ public static class DatabaseConnection
         {
             _connection.Close();
             Console.WriteLine(ex.Message);
-            //Ignore
+            //some database operation did not work correctly.
         }
-        return new List<Picture>();
+        return new List<Picture>(); //if something broke, an empty list will be returned
     }
 
     public static async Task<bool> CreatePicture(string name, string description, string filePath, string email)
@@ -161,19 +161,19 @@ public static class DatabaseConnection
             connection.Open();
             var command = new MySqlCommand();
             command.Connection = connection;
-            command.CommandText = $@"SELECT Id FROM useraccount WHERE Email = @Email";
+            command.CommandText = $@"SELECT Id FROM useraccount WHERE Email = @Email";  //get ID from account with specified email
             command.Parameters.AddWithValue("@Email", email);
             var reader = command.ExecuteReader();
             int Id = -1;
             while (reader.Read())
             {
-                Id = reader.GetInt32("Id");
+                Id = reader.GetInt32("Id"); //set ID to id from database if account exists
             }
             reader.Close();
-            if (Id == -1) return false;
+            if (Id == -1) return false; //return false if account does not exist
             command = new MySqlCommand();
             command.Connection = connection;
-            command.CommandText = $@"INSERT INTO `picture` (`Id`, `DateCreated`, `Name`, `Description`, `File`, `AccountId`) VALUES (NULL, NOW(), @Name, @Description, @File, @Id);";
+            command.CommandText = $@"INSERT INTO `picture` (`Id`, `DateCreated`, `Name`, `Description`, `File`, `AccountId`) VALUES (NULL, NOW(), @Name, @Description, @File, @Id);"; //add picture with creation datetime of now
             command.Parameters.AddWithValue("@Name", name);
             command.Parameters.AddWithValue("@Description", description);
             command.Parameters.AddWithValue("@File", filePath);
@@ -192,7 +192,7 @@ public static class DatabaseConnection
         return false;
     }
 
-    public static async Task<string> GetPasswordHash(string email)
+    public static async Task<string> GetPasswordHash(string loginCredential)
     {
         string connectionString = "server="+_databaseServer+";uid="+_databaseUser+";pwd="+_databasePassword+";database="+_databaseName;
         MySqlConnection _connection = new MySqlConnection(connectionString);
@@ -201,21 +201,22 @@ public static class DatabaseConnection
             _connection.Open();
             MySqlCommand command = new MySqlCommand();
             command.Connection = _connection;
-            if (MailAddress.TryCreate(email, out MailAddress mail))
+            if (MailAddress.TryCreate(loginCredential, out MailAddress mail)) //check if provided string is email or username
             {
-                command.CommandText = $@"SELECT Password FROM useraccount WHERE Email = @Email;";
+                command.CommandText = $@"SELECT Password FROM useraccount WHERE Email = @LoginCredential;"; //if email get password where email is email
             }
             else
             {
-                command.CommandText = $@"SELECT Password FROM useraccount WHERE UserName = @Email;";
+                command.CommandText = $@"SELECT Password FROM useraccount WHERE UserName = @LoginCredential;"; //if not email get passwrod where username is username
             }
             
-            command.Parameters.AddWithValue("@Email", email); 
+            command.Parameters.AddWithValue("@LoginCredential", loginCredential); 
             var reader = command.ExecuteReader();
             var passwordHash = "";
             while (reader.Read())
             {
-                passwordHash = reader.GetString("Password");            }
+                passwordHash = reader.GetString("Password");
+            }
             _connection.Close();
             return passwordHash;
         }
@@ -232,7 +233,7 @@ public static class DatabaseConnection
     {
         string connectionString = "server="+_databaseServer+";uid="+_databaseUser+";pwd="+_databasePassword+";database="+_databaseName;
         MySqlConnection _connection = new MySqlConnection(connectionString);
-        var messages = new List<string>();
+        var messages = new List<string>(); //new list of error messages to return
         try
         {
             _connection.Open();
@@ -246,11 +247,11 @@ public static class DatabaseConnection
             {
                 var tempEmail = reader.GetString("Email");
                 var tempUsername = reader.GetString("Username");
-                if (tempEmail == email)
+                if (tempEmail == email) //if mail exists
                 {
                     messages.Add($"Email {tempEmail} is already in use");
                 }
-                if (tempUsername == username)
+                if (tempUsername == username)   //if username exists
                 {
                     messages.Add($"Username {tempUsername} is already in use");
                 }
@@ -265,10 +266,10 @@ public static class DatabaseConnection
             //Ignore
         }
 
-        return messages;
+        return messages; //return messages
     }
     
-    public static async Task<User?> GetUserDetails(string email)
+    public static async Task<User?> GetUserDetails(string loginCredential)
     {
         string connectionString = "server="+_databaseServer+";uid="+_databaseUser+";pwd="+_databasePassword+";database="+_databaseName;
         MySqlConnection _connection = new MySqlConnection(connectionString);
@@ -277,15 +278,15 @@ public static class DatabaseConnection
             _connection.Open();
             MySqlCommand command = new MySqlCommand();
             command.Connection = _connection;
-            if (MailAddress.TryCreate(email, out MailAddress mail))
+            if (MailAddress.TryCreate(loginCredential, out MailAddress mail))
             {
-                command.CommandText = $@"SELECT * FROM useraccount WHERE Email = @Email";
+                command.CommandText = $@"SELECT * FROM useraccount WHERE Email = @LoginCredential";
             }
             else
             {
-                command.CommandText = $@"SELECT * FROM useraccount WHERE UserName = @Email";
+                command.CommandText = $@"SELECT * FROM useraccount WHERE UserName = @LoginCredential";
             }
-            command.Parameters.AddWithValue("@Email", email);
+            command.Parameters.AddWithValue("@LoginCredential", loginCredential);
             var reader = command.ExecuteReader();
             User? user = null;
             while (reader.Read())
@@ -295,7 +296,7 @@ public static class DatabaseConnection
                 var tempFirstName = reader.GetString("FirstName");
                 var tempLastName = reader.GetString("LastName");
                 var tempDateOfBirth = reader.GetDateTime("DateOfBirth");
-                user = new User(tempUsername, "", tempDateOfBirth, tempEmail, tempFirstName, tempLastName, [], []);
+                user = new User(tempUsername, "", tempDateOfBirth, tempEmail, tempFirstName, tempLastName, [], []); //create new user to send back to application
             }
             _connection.Close();
             return user;
@@ -307,7 +308,7 @@ public static class DatabaseConnection
             //Ignore
         }
 
-        return null;
+        return null;    //return null if something went wrong
     }
 
 

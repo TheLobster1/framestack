@@ -101,7 +101,7 @@ namespace framestack.ViewModels
         {
             ErrorMessage = "";
             if (!allowedUsername || !allowedFirstname || !allowedLastname || !allowedEmail || !allowedPassword ||
-                !allowedDateOfBirth) return;
+                !allowedDateOfBirth) return;    //check if user filled in all fields
             var tempUser = new User(Username, Password, Firstname, Lastname, Email, DateOfBirth);
             tempUser.setPassword(Password);
             var result =
@@ -116,18 +116,18 @@ namespace framestack.ViewModels
                 return;
             }
 
-            await RestService.CreateUser(tempUser);
-            await Application.Current.MainPage.Navigation.PushAsync(new LoginPage(new LoginPageViewModel()));
+            await RestService.CreateUser(tempUser); //wait for user to be created
+            await Application.Current.MainPage.Navigation.PushAsync(new LoginPage(new LoginPageViewModel()));   //navigate to login page
 
         }
 
         private async Task CheckUsernameWithDelay()
         {
-            var user = new User(Username, "", "", "", Email, DateOfBirth);
-            UsernameDatabaseCheckToken.Cancel();
-            UsernameDatabaseCheckToken = new CancellationTokenSource();
-            await Task.Delay(1000, UsernameDatabaseCheckToken.Token);
-            var result = await RestService.CheckUser(user);
+            var user = new User(Username, "", "", "", Email, DateOfBirth);  //create new user variable to check
+            UsernameDatabaseCheckToken.Cancel();    //cancel previous task
+            UsernameDatabaseCheckToken = new CancellationTokenSource(); //set new token
+            await Task.Delay(1000, UsernameDatabaseCheckToken.Token);   //wait for one second before continuing
+            var result = await RestService.CheckUser(user);   //check if user exists in database with returned error messages showing which error happend
             ErrorMessage = "";
             allowedUsername = true;
             allowedEmail = true;
@@ -135,9 +135,9 @@ namespace framestack.ViewModels
             {
                 foreach (var message in result)
                 {
-                    if (message.Contains("Username")) allowedUsername = false;
-                    if (message.Contains("Email")) allowedEmail = false;
-                    ErrorMessage += $"{message}\n";
+                    if (message.Contains("Username")) allowedUsername = false;  //if message with string "Username" returns the username is already taken
+                    if (message.Contains("Email")) allowedEmail = false;        //if message with string "Email" returns, the email is already in use
+                    ErrorMessage += $"{message}\n"; //show the error message on screen if the error message box was added to the UI
                 }
             }
         }
