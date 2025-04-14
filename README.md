@@ -33,3 +33,35 @@ Asynchronous I/O will be used when submitting items to the database. The picture
 ### Class Diagram
 
 ![C# threading diagram](https://github.com/TheLobster1/framestack/blob/master/FrameStack.png)
+
+
+# INSTRUCTIONS
+## Prerequisites
+1. Running MySQL/MariaDB database with admin privileges
+2. Windows machine (Or VM)
+3. Visual Studio 2022 or Rider installed with .NET 9 support
+
+## Setup Instructions
+1. Clone this repository to your Windows machine
+2. Import the SQL file in your database server. The file is located in the main folder and is called "framestack.sql"
+3. Open the repository in either Visual Studio 2022 or Rider (from now on referenced as "IDE")
+
+In the solution, there will be two different projects. One called "framestack", and the other called "framestackAPI".
+
+4. In the solution "framestackAPI", open the "Utils.cs" file and change the value of "filePath" to the location you want your pictures to be stored at. Make sure this location is writable by the application.
+5. In this same solution there is also the file "DatabaseConnection.cs", in this file you need to change the values of _databaseServer, _databaseUser and _databasePassword to the correct values for your database server.
+
+## Running the Projects
+1. Start the database server
+2. Start the API (Should work in both debug and regular run)
+3. Start the Windows Application
+
+## What to do in the application
+1. Navigate to the register page.
+2. Create an account
+3. Log in to the Account
+4. Press the plus button in the top right corner and add some files.
+5. Wait a few milliseconds for the pictures to show up.
+
+## Notes:
+The current implementation only allows for adding files to an account, no other features have been implemented.
