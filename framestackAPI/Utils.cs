@@ -21,7 +21,7 @@ public static class Utils
         var results = new string[3];
         results[0] = fullFilePath;
         results[1] = fileUploadForm.FileName;
-        results[3] = description;
+        results[2] = description;
         return results;
     }
 }

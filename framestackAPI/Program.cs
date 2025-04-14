@@ -91,7 +91,7 @@ app.MapPost("/uploadpictures", async Task<Results<Ok<string>, BadRequest<string>
         foreach (var file in form.Files)
         {
             if (file == null) continue;
-            if (string.IsNullOrEmpty(file.FileName)) return TypedResults.BadRequest("Please provide a file name");
+            if (string.IsNullOrEmpty(file.FileName)) continue;
             tasks.Add(Utils.UploadFile(file, user.Email));
         }
         await Task.WhenAll(tasks);
